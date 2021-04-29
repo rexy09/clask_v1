@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Human Resources
+{% endblock %}
+
+
+{% block content %}
+	<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+	    <a class="dashboard-stat bg-primary" href="{% url 'human_resource:employee-list' %}">
+	        <span class="number counter"></span>
+	        <span class="name">Employees</span>
+	        <span class="bg-icon"><i class="fa fa-users" style="padding: 12px;"></i></span>
+	    </a>
+	</div>
+{% endblock %}

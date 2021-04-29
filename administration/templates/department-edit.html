@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Department Edit{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'administration:administrator' %}">Administrator</a></li>
+<li><a href="{% url 'administration:department-list' %}">Department List</a></li>
+<li>Department Edit</li>
+{% endblock%}
+
+{% block content %}
+
+  <div class="container-fluid">
+
+    <div class="row">   
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Department</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+        
+
+                    <form class="" method="POST" action="">
+                        {% csrf_token %}
+                <div class="form-group">
+                    <label for="name2">Department</label>
+                    <!-- <span class="fa fa-building form-left-icon"></span> -->
+                    {{dpt_form.name|add_class:"form-control"|attr:"placeholder:Department name"}}
+                </div>                
+                                                                                                             
+                        <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i class="fa fa-check"></i>Submit</button>
+        
+                    </form>
+
+
+            <!-- /.col-md-12 -->
+        </div>
+    </div>
+</div>
+</div>
+
+</div>
+
+
+       
+{% endblock %}

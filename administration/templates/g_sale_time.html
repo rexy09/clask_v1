@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}
+General Sales
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'administration:general_reports' %}">General Reports</a></li>
+<li>General Sales</li>
+{% endblock%}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+
+			<div class="panel">
+				<div class="panel-heading">
+					<div class="panel-title">
+						<h5>Choose Time Frame</h5>
+					</div>
+				</div>
+				<div class="panel-body p-20">
+					<div id="" class="list-group">
+						<a class="list-group-item" href="{% url 'administration:sales_report' d=1 %}">Today</a>
+						<a class="list-group-item" href="{% url 'administration:sales_report' d=2 %}">Yesterday</a>
+						<a class="list-group-item" href="{% url 'administration:sales_report' d=3 %}">Last 7
+							Days</a>
+						<a class="list-group-item" href="{% url 'administration:sales_report' d=4 %}">Last 30
+							Days</a>
+						<a class="list-group-item" href="{% url 'administration:sales_report' d=5 %}">Current
+							Month</a>
+						<a class="list-group-item" href="{% url 'administration:sales_report' d=6 %}">Previous
+							Month</a>
+						<a class="list-group-item" href="{% url 'administration:sales_report' d=7 %}">Grand
+							Report</a>
+					</div>
+					<hr>
+					<form class="" action="{% url 'administration:sales_report' d=8 %}" method="GET">
+						<label class="">From</label>
+						<input type="date" class="form-control mb-2 mr-sm-2" id="" placeholder="Date" name="fr" required>
+						<label class="">To</label>
+						<input type="date" class="form-control mb-2 mr-sm-2" id="" placeholder="Date" name="to" required>
+						<button type="submit" class="btn btn-primary mb-2">Search</button>
+					</form>
+
+				</div>
+			</div>
+		</div>
+		<!-- /.col-md-6 -->
+
+	</div>
+
+</div>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+
+<script>
+	$(function ($) {
+		$('#example').DataTable();
+	});
+</script>
+{% endblock %}

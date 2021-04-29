@@ -1,0 +1,122 @@
+{% load static %}
+{% load humanize %}
+{% load django_template_maths %}
+
+<head>
+    <title>Payroll Report</title>
+    <style>
+        @page {
+            size: A4;
+            /* Change from the default size of A4 */
+            margin: 0.5cm;
+            /* Set margin on each page */
+            background-color: #f5f4f3;
+
+        }
+
+        header {
+            height: auto;
+            width: 100%;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        body {
+            background-color: #ffffff;
+            font-size: 12px;
+            font-family: 'Lucida Sans';
+            background-image: url("{% static 'img/potraits.png' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+            border-collapse: collapse;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: whitesmoke;
+        }
+
+        table th {
+            background-color: #7ebb45;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th {
+            text-align: center;
+            padding: 5px;
+            font-size: 12px;
+        }
+
+        td {
+            text-align: center;
+            padding: 5px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="{% static 'img/report-heading.png' %}" alt="">
+    </header>
+        <br><br>
+        <h1 style="color: #28a745;">Balance Sheet</h1>
+        <br>
+
+					<div class="table-responsive">
+						<table id="example" class="display table table-striped table-bordered" cellspacing="0"
+							width="100%">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Date Created</th>
+									<th>Description</th>
+									<th>Debit</th>
+									<th>Credit</th>
+									<th>Balance</th>	
+								</tr>
+							</thead>
+						
+							<tbody>
+								{% for cash in cashflow %}
+								<tr>
+									<td>{{forloop.counter}}</td>
+									<td>{{cash.created_at.date}}</td>
+									<td>{{cash.description}}</td>
+									<td>
+										{{cash.debit|floatformat:2|intcomma}}
+									</td>
+									<td>
+										{{cash.credit|floatformat:2|intcomma}}
+									</td>
+									<td>{{cash.balance|floatformat:2|intcomma}}</td>
+									
+								</tr>
+
+								{% empty %}
+								<tr>
+									<td colspan="11" class="text-center">
+										No Cashflow records
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+                    </div>
+</body>

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Fixed Assets Management
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li>Fixed Asset Management</li>
+{% endblock%}
+
+{% block content %}
+<!-- 	<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+	    <a class="dashboard-stat bg-success" href="#">
+	        <span class="number counter">1,411</span>
+	        <span class="name">Employee Registration</span>
+	        <span class="bg-icon"><i class="fa fa-user" style="padding: 12px;"></i></span>
+	    </a>
+
+	    <div class="src-code">
+	        <pre class="language-html"><code class="language-html">
+	        &lt;a class="dashboard-stat bg-primary" href="#"&gt;
+	            &lt;span class="number counter"&gt;1,411&lt;/span&gt;
+	            &lt;span class="name"&gt;Comments&lt;/span&gt;
+	            &lt;span class="bg-icon"&gt;&lt;i class="fa fa-comments"&gt;&lt;/i&gt;&lt;/span&gt;
+	        &lt;/a&gt;
+	        &lt;!-- /.dashboard-stat --&gt;
+
+	        &lt;!-- ========== JS ========== --&gt;
+	        &lt;script&gt;
+	            $(function(){
+	                $('.counter').counterUp();
+	            });
+	        &lt;/script&gt;
+	            </code></pre>
+	    </div>
+	</div> -->
+	<!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
+
+	<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+	    <a class="dashboard-stat bg-primary" href="{% url 'business:fixed-asset-list' id=business.id %}">
+	        <span class="number counter">1,411</span>
+	        <span class="name">Fixed assets</span>
+	        <span class="bg-icon"><i class="fa fa-users" style="padding: 12px;"></i></span>
+	    </a>
+	</div>
+	<!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
+
+{% endblock %}

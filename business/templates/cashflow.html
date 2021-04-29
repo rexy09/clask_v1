@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% load django_template_maths %}
+
+{% block title %}
+Cashbook 
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:financial_statements' id=business.id %}">Financial Statement</a></li>
+<li><a href="{% url 'business:cashflow_time' id=business.id %}">Cashbook</a></li>
+<li>Cashbook</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+
+	<div class="row">\
+		{{fr}}
+		{{to}}
+		<div class="col-md-10 col-md-offset-1">
+
+			<div class="panel">	
+			
+				<div class="panel-heading">
+					<div class="panel-title">
+						<h3 style="float: left; font-weight: 700 !important; color: #28a745 !important;" class="">Cashbook</h3>
+						<a href="{% url 'business:cashflow' id=business.id %}?fr={{fr}}&to={{to}}&pdf=1"
+							class="btn btn-primary" style="float: right; margin: 20px;" target="_blank"><i class="fa fa-print fa-lg"
+								style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+						<a href="{% url 'business:cashflow' id=business.id %}?fr={{fr}}&to={{to}}&xl=1"
+							class="btn btn-success" style="float: right; margin: 20px 0px 0px 0px;" target="_blank"><i class="fa fa-file-excel-o fa-lg"
+								style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+					</div>
+				</div>
+				<br><br>
+				<div class="panel-body p-20 ">
+
+					<div class="table-responsive">
+						<table id="example" class="display table table-striped table-bordered" cellspacing="0"
+							width="100%">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Date Created</th>
+									<th>Description</th>
+									<th>Debit</th>
+									<th>Credit</th>
+									<th>Balance</th>	
+								</tr>
+							</thead>
+						
+							<tbody>
+								{% for cash in cashflow %}
+								<tr>
+									<td>{{forloop.counter}}</td>
+									<td>{{cash.created_at.date}}</td>
+									<td>{{cash.description}}</td>
+									<td>
+										{{cash.debit|floatformat:2|intcomma}}
+									</td>
+									<td>
+										{{cash.credit|floatformat:2|intcomma}}
+									</td>
+									<td>{{cash.balance|floatformat:2|intcomma}}</td>
+									
+								</tr>
+
+								{% empty %}
+								<tr>
+									<td colspan="11" class="text-center">
+										No Cashflow records
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+<script>
+	$(function () {
+		$('.counter').counterUp();
+	});
+</script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Business Edit{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'administration:administrator' %}">Administrator</a></li>
+<li><a href="{% url 'administration:business-list' %}">Business List</a></li>
+<li>Business Edit</li>
+{% endblock%}
+
+{% block content %}
+
+  <div class="container-fluid">
+
+    <div class="row">   
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Business</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+        
+
+                    <form class="" method="POST" action="">
+                        {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name2">Business Name</label>
+                        <!-- <span class="fa fa-globe form-left-icon"></span> -->
+                        {{b_form.name|add_class:"form-control"|attr:"placeholder:Business name"}}
+                    </div>
+                                                                                                             
+                        <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i class="fa fa-check"></i>Submit</button>
+        
+                    </form>
+
+            <!-- /.col-md-12 -->
+        </div>
+    </div>
+</div>
+</div>
+
+</div>
+
+
+       
+{% endblock %}

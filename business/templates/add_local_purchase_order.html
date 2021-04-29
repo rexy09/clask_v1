@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Add Local Purchase Order
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:procurement_management' id=business.id %}">Procurement Management Unit</a></li>
+<li><a href="{% url 'business:local_purchase_order' id=business.id %}">Local Purchase Order List</a></li>
+<li>Add Local Purchase Order</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Local Purchase Order Info.</h5>
+                    </div>
+                </div>
+                <div class="panel-body p-20">
+                    <form class="" method="POST" action=".">
+                        {% csrf_token %}
+                        <div class="form-group ">
+                            <label for="name2">SUPPLIER</label>
+                            <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                            {{purchase_order_form.supplier|add_class:"form-control"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">DELIVERY CENTER</label>
+                            <!-- <span class="fa fa-sort-numeric-up-alt form-left-icon"></span> -->
+                            {{purchase_order_form.delivery|add_class:"form-control"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">LPO NUMBER</label>
+                            <!-- <span class="fa fa-money-bill form-left-icon"></span> -->
+                            {{purchase_order_form.lpo_no|add_class:"form-control"|attr:"placeholder:PO NUMBER"}}
+                        </div>
+
+                        <div class="form-group mt-40">
+                            <button type="button" class="btn btn-primary btn-rounded btn-wide pull-right" onclick="add_local_purchase_order_list()" ><i class="fa fa-plus"></i>Add</button>
+                            <!-- <button type="button" class="btn btn-primary" onclick="add_local_purchase_order_list()" style="float: right;"><i class="fa fa-plus"></i> Add</button> -->
+                            <label style="font-weight: bold;" style="float: left;">PURCHASE ORDER</label>
+                        </div>
+
+                        <div class="row" id="local-purchase-order-list-form">
+                            {{ purchase_order_list_form.management_form }}
+                            {% for form in purchase_order_list_form %}
+                            <div class="col-md-4">
+                                {{form.description|add_class:"form-control"|attr:"placeholder:Description"}}
+                            </div>
+                            <div class="col-md-1">
+                                {{form.unit|add_class:"form-control"|attr:"placeholder:Unit"}}
+                            </div>
+                            <div class="col-md-2">
+                                {{form.quantity|add_class:"form-control"|attr:"placeholder:Quantity"}}
+                            </div>
+                            <div class="col-md-2">
+                                {{form.price|add_class:"form-control"|attr:"placeholder:Price"}}
+                            </div>
+                            <div class="col-md-2">
+                                {{form.total|add_class:"form-control"|attr:"placeholder:Total"}}
+                            </div>
+                            <div class="col-md-1">
+                                {% if purchase_order_list_form.can_delete %}
+                                <div class="custom-control custom-checkbox">
+                                    {{form.DELETE|add_class:"custom-control-input"}}
+                                    <i class="fa fa-trash text-danger fa-lg" style="margin: 0px !important;"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <br>
+                        <div class="form-group mt-50" style="display: inline;">
+                            {{purchase_order_form.published|add_class:""}}
+                            <label for="" style="display: inline;">Publish for Review</label>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                                class="fa fa-check"></i>Submit</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+
+</div>
+
+<script>
+    function add_local_purchase_order_list() {
+        var particulars_index = parseInt($("#id_local_purchase_order_list-TOTAL_FORMS").val())
+
+        console.log(particulars_index)
+        var particular_field = `
+        <div class="col-md-4">
+            <input type="text" name="local_purchase_order_list-${particulars_index}-description" maxlength="256" placeholder="Description" class="form-control" id="id_local_purchase_order_list-${particulars_index}-description">
+        </div>
+        <div class="col-md-1">
+            <input type="text" name="local_purchase_order_list-${particulars_index}-unit" maxlength="100" placeholder="Unit" class="form-control" id="id_local_purchase_order_list-${particulars_index}-unit">
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="local_purchase_order_list-${particulars_index}-quantity" placeholder="Quantity" class="form-control" id="id_local_purchase_order_list-${particulars_index}-quantity">
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="local_purchase_order_list-${particulars_index}-price" step="0.01" placeholder="Price" class="form-control" id="id_local_purchase_order_list-${particulars_index}-price">
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="local_purchase_order_list-${particulars_index}-total" step="0.01" placeholder="Total" class="form-control" id="id_local_purchase_order_list-${particulars_index}-total">
+        </div>
+        <div class="col-md-1">
+            
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" name="local_purchase_order_list-${particulars_index}-DELETE" class="custom-control-input" id="id_local_purchase_order_list-${particulars_index}-DELETE">
+                <i class="fa fa-trash text-danger fa-lg" style="margin: 0px !important;"></i>
+            </div>
+            
+        </div>
+        `
+        $('#local-purchase-order-list-form').append(particular_field)
+
+
+        $("#id_local_purchase_order_list-TOTAL_FORMS").val(particulars_index + 1);
+
+    }
+</script>
+
+{% endblock %}

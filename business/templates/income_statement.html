@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+Income Statement
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:financial_statements' id=business.id %}">Financial Statements</a></li>
+<li>Income Statement</li>
+{% endblock%}
+
+{% block content %}
+<style>
+	table th {
+		background-color: #7ebb45;
+		color: white;
+		font-weight: 700;
+		font-size: large;
+	  }
+</style>
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+
+			<div class="panel">
+				<div class="panel-heading">
+					<div class="panel-title">
+						<h3 style="float: left; font-weight: 700 !important; color: #28a745 !important;" class="">Income Statement</h3>
+						<a href="{% url 'business:income_statement' d=d id=business.id %}?pdf=1"
+							class="btn btn-primary" style="float: right; margin: 20px;" target="_blank"><i class="fa fa-print fa-lg"
+								style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+						<a href="{% url 'business:income_statement' d=d id=business.id %}?xl=1"
+							class="btn btn-success" style="float: right; margin: 20px 0px 0px 0px;" target="_blank"><i class="fa fa-file-excel-o fa-lg"
+								style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+					</div>
+				</div>
+				<div class="panel-body p-20">
+
+					<table id="example" class="display table table-striped" cellspacing="0" width="100%">
+						<thead>
+							<tr>
+								<th>Particulars</th>
+								<th>Amount</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr>
+								<td>Operating Revenue</td>
+								<td>{{summary.total_paid|intcomma}}</td>
+							</tr>
+							<tr style="border-top: 2px solid black; border-bottom: 2px solid black;">
+								<td style="font-weight: 700;">Total Income</td>
+								<td style="font-weight: 700;">{{summary.total_paid|intcomma}}</td>
+							</tr>
+							<tr style="">
+								<td style="font-weight: 700;">Operational Expense (OPEX)</td>
+								<td style="font-weight: 700;">{{summary.opex|intcomma}}</td>
+							</tr>
+							<tr>
+								<td>COGS</td>
+								<td>{{summary.cogs|floatformat:2|intcomma}}</td>
+							</tr>
+							<tr style="">
+								<td style="font-weight: 700;">EBIT</td>
+								<td style="font-weight: 700;">{{summary.ebit|intcomma}}</td>
+							</tr>     
+							<tr style="">
+								<td style="font-weight: 700;">EBITDA</td>
+								<td style="font-weight: 700;">{{summary.ebitda|intcomma}}</td>
+							</tr>                                                                                
+							<tr>
+								<td>Tax & Interest</td>
+								<td>{{summary.tax_interest|floatformat:2|intcomma}}</td>
+							</tr>
+							<tr style="">
+								<td style="font-weight: 700;">Net Income</td>
+								<td style="font-weight: 700;">{{summary.net_income|intcomma}}</td>
+							</tr>                                
+						</tbody>
+
+					</table>
+
+				</div>
+			</div>
+		</div>
+		<!-- /.col-md-6 -->
+
+	</div>
+
+</div>
+{% endblock %}

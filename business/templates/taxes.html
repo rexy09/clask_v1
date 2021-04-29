@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block title %}Taxes{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:expenses' id=business.id %}">Expenses</a></li>
+<li>Taxes</li>
+{% endblock%}
+
+{% block content %}
+
+<style type="text/css">
+  .fab {
+    background: #4B9848;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    text-align: center;
+    color: #FFF;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5), 3px 3px 3px rgba(0, 0, 0, 0.25);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.6667em;
+    display: inline-block;
+    cursor: default;
+    padding-top: 8px;
+  }
+
+  .fab span {
+    vertical-align: text-bottom;
+    font-size: 45px;
+  }
+  .liabilitiesData{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+</style>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel-body bg-white">
+        <div class="table-responsive">
+          <table class="table table-bordered" width="100%" cellspacing="0" id="example">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Authority</th>
+                <th>Amount</th>
+                <th>Remain</th>
+                <th>Action</th>
+    
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Authority</th>
+                <th>Amount</th>
+                <th>Remain</th>
+                <th>Action</th>
+              </tr>
+            </tfoot>
+            {% if taxes %}
+            <tbody id="myTable">
+              {% for tax in taxes %}
+    
+              <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{tax.name}}</td>
+                <td>{{tax.authority}}</td>
+                <td>{{tax.amount|floatformat:0|intcomma}}</td>
+                <td>{{tax.remain|floatformat:0|intcomma}}</td>
+                <td>
+                  <a href="#" class="hvr-icon-push hvr-shrink" data-micron-timing="linear" data-micron="bounce"
+                    data-micron-duration=".">
+                    <button class="btn btn-success btn-sm" data-micron-timing="linear" data-micron="bounce"
+                      data-micron-duration="." data-toggle="modal" data-target="#PayModal"
+                      data-tax="{{tax.id}}" data-name="{{tax.name}}" data-remain="{{tax.remain}}">                      
+                      Pay
+                    </button>
+                  </a>
+
+                </td>
+              </tr>
+              {% endfor %}
+    
+              {% else %}
+              <tr>
+                <td colspan="6" class="text-center">0 Tax</td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fab" id="masterfab" data-toggle="modal" data-target="#TaxModal"><span>+</span></div>
+  <!-- Modal -->
+  <div class="modal fade" id="TaxModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Add Tax</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="" method="POST" action="">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="name2">Tax Name</label>
+                {{form.name|add_class:"form-control"|attr:"placeholder:Tax name"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Tax Authority</label>
+                {{form.authority|add_class:"form-control"|attr:"placeholder:Tax authority"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Amount</label>
+                {{form.amount|add_class:"form-control"}}
+              </div>
+              <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                  class="fa fa-check"></i>Submit</button>
+
+            </form>
+   
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Pay Tax Modal -->
+  <div class="modal fade" id="PayModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div style="background-color: whitesmoke;padding:10px;border-radius:10px;">
+              <div class="row p-3">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                  <span style="font-size: 20px;font-weight:700;"></span>
+                  <div class="liabilitiesData">
+                   <span style="font-weight: 600;margin-right:5px;">Tax Name </span> <span id="name"></span>
+                  </div>
+                   <div class="liabilitiesData">
+                    <span style="font-weight: 600;margin-right:5px;">Remain </span> <span id="remain"></span>/=
+                   </div>
+                </div>
+              </div>
+            </div>
+            <form class="" method="POST" action="{% url 'business:pay_tax' id=business.id %}">
+              {% csrf_token %}
+              
+              <div class="form-group">
+               <input type="hidden" id="tax" name="tax" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="name2">Amount</label>
+               <input type="number" name="amount" id=""  class="form-control" required>
+              </div>
+              <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                  class="fa fa-check"></i>Submit</button>
+
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of Tax modal -->
+</div>
+
+<script>
+  $('#PayModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var tax= button.data('tax') // Extract info from data-* attributes
+    var name = button.data('name') // Extract info from data-* attributes
+    var remain = button.data('remain') // Extract info from data-* attributes
+
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+    modal.find('.modal-title').text('Pay Tax')
+    modal.find('.modal-body #tax').val(tax)
+    modal.find('.modal-body #name').text(name)
+    modal.find('.modal-body #remain').text(remain)
+  })
+</script>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+
+<script>
+  $(function ($) {
+    $('#example').DataTable();
+  });
+</script>
+
+{% endblock %}

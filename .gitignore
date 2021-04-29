@@ -1,0 +1,6 @@
+media/**
+administration/migrations/**
+human_resource/migrations/**
+business/migrations/**
+*.pyc
+.env

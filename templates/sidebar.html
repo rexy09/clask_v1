@@ -1,0 +1,84 @@
+{% load static %}
+<style>
+    .left-sidebar {
+        background-image: linear-gradient(to bottom, #00614a, #001d16)
+    }
+</style>
+<div class="left-sidebar  box-shadow">
+    <div class="sidebar-content">
+        <div class="user-info">
+            <a href="{% url 'index' %}"> <img class="mt-20" src="{% static 'img/clask-logo.png' %}" alt="" width="150"
+                    height="auto"></a>
+
+        </div>
+        <!-- /.user-info -->
+
+        <div class="sidebar-nav">
+            <ul class="side-nav color-gray">
+                <li class="nav-header">
+                    <span class="">Menu</span>
+                </li>
+                <li class="has-children">
+                    <a href="#"><i class="fa fa-dashboard"></i> <span>Dashboard</span> <i
+                            class="fa fa-angle-right arrow"></i></a>
+                    <ul class="child-nav">
+                        <li class=""><a href="{% url 'index' %}"><i
+                                    class="fa fa-area-chart"></i> <span>General
+                                    Analysis</span></a></li>
+
+                        <li><a href="{% url 'administration:general_reports' %}"><i class="fa fa-file-text"></i>
+                                <span>General Reports</span></a>
+                        </li>
+                        {% if user.is_staff %}
+                        <li><a href="{% url 'administration:administrator' %}"><i class="fa fa-user-secret"></i>
+                                <span>Administrator</span></a>
+                        </li>
+                        {% endif %}
+                        <li><a href="{% url 'administration:user-profile' %}"><i class="fa fa-user"></i>
+                                <span>Profile</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="has-children" id="business">
+                    <a href="#"><i class="fa fa-briefcase"></i> <span>Business</span><i
+                            class="fa fa-angle-right arrow"></i></a>
+                    <ul class="child-nav" id="business-child-nav">
+                        <!-- Business name and url append -->
+
+                    </ul>
+                </li>
+
+                {% if user.user_employee.position == 'Human Resource Manager' or user.user_employee.position == 'Human Resource Officer' or user.is_staff %}
+                <li><a href="{% url 'human_resource:human-resource-home' %}"><i class="fa fa-balance-scale"></i>
+                        <span>Human Resources</span></a>
+                </li>
+                {% endif%}
+                <li><a href="http://clasktanzania.co.tz/" target="_blank"><i class="fa fa-users"></i>
+                        <span>About us</span></a></li>
+            </ul>
+            <!-- /.side-nav -->
+        </div>
+        <!-- /.sidebar-nav -->
+    </div>
+    <!-- /.sidebar-content -->
+</div>
+
+<script>
+    $(window).on("load", function () {
+        var $business_child = $("#business-child-nav")
+        $.ajax({
+            url: "{% url 'administration:get_business' %}",
+            dataType: "json",
+            success: function (data) {
+                var $data = JSON.parse(data);
+                $.each($data, function (key, business) {
+                    $business_child.append(
+                        `<li><a href="/business/${business.pk}/profile/"><i class="fa fa-briefcase"></i><span>${business.fields.name}</span></a></li>`
+                    );
+                });
+
+            }
+        });
+
+    });
+</script>

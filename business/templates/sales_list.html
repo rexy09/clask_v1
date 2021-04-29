@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{branch.location}} Sales List
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=branch.business.id %}">{{branch.business.name}}</a></li>
+<li><a href="{% url 'business:sales_branch' id=branch.business.id %}">Business Branch</a></li>
+<li>{{branch.location}} Sales List</li>
+{% endblock%}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Sale List</h5>
+                        <!-- <a href="{% url 'business:add_sale' id=branch.id %}" class="btn btn-success text-light"><i
+                                class="fa fa-plus"></i> Sale</a> -->
+                    </div>
+                </div>
+                <div class="panel-body p-20 table-responsive">
+
+                    <table id="example" class="display table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Profit</th>
+                                <th>Amount Paid</th>
+                                <th>Discount</th>
+                                <th>Tax</th>
+                                <th>Order No.</th>
+                                <th>Status</th>
+                                <th>Date Created</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Profit</th>
+                                <th>Amount Paid</th>
+                                <th>Discount</th>
+                                <th>Tax</th>
+                                <th>Order No.</th>
+                                <th>Status</th>
+                                <th>Date Created</th>
+                                <th>Action</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for sale in sales %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{sale.inventory.product.name}}</td>
+                                <td>{{sale.quantity}}</td>
+                                <td>{{sale.total}}</td>
+                                <td>{{sale.profit}}</td>
+                                <td>{{sale.amount_paid}} {{sale.inventory.product.currency}}</td>
+                                <td>{{sale.discount}} {{sale.discount_unit}}</td>
+                                <td>{{sale.tax}} {{sale.tax_unit}}</td>
+                                <td>{{sale.order_no}}</td>
+                                <td>{{sale.status}}</td>
+                                <td>{{sale.created_at.date}}</td>
+                                <td>                                    
+                                    {% if sale.status == 'Awaiting Payment' %}
+                                    <a href="{% url 'business:edit_sale' id=sale.id %}" class="btn btn-primary">
+                                        <i class="fa fa-edit" style="margin: 0px !important;"></i>
+                                    </a>                                        
+                                    {% endif %}                                       
+                                    {% if request.user.is_superuser %}
+                                    <a href="{% url 'business:delete_sale' id=sale.id %}" class="btn btn-danger">
+                                        <i class="fa fa-trash" style="margin: 0px !important;"></i>
+                                    </a>
+                                    {% endif %}
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+                            <tr>
+                                <td colspan="12" class="text-center">
+                                    No Sale records
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+    <div class="fab" id="masterfab" data-toggle="modal" data-target="#expenseModal"> <a href="{% url 'business:add_sale' id=branch.id %}"><span>+</span></a></div>
+</div>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+
+<script>
+    $(function ($) {
+        $('#example').DataTable();
+    });
+</script>
+{% endblock %}

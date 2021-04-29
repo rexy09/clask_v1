@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Expenses
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li>Expenses</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-success" href="{% url 'business:expense-list' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">OPEX</span>
+                <span class="bg-icon"><i class="fa fa-cogs" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+        
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-primary" href="{% url 'business:takehome' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Pay Roll</span>
+                <span class="bg-icon"><i class="fa fa-credit-card" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-warning" href="{% url 'business:loan-list' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Employee Loan</span>
+                <span class="bg-icon"><i class="fa fa-credit-card" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="{% url 'business:interest-list' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Interest</span>
+                <span class="bg-icon"><i class="fa fa-ticket" style="padding: 12px;"></i></span>
+            </a>
+
+        </div>
+
+    </div>
+    <div class="row pt-20">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-warning" href="{% url 'business:taxes' id=business.id %}" >
+                <span class="number counter"></span>
+                <span class="name">Tax </span>
+                <span class="bg-icon"><i class="fa fa-money" style="padding: 12px;"></i></span>
+            </a>
+        </div>        
+    </div>
+   
+</div>
+{% endblock %}

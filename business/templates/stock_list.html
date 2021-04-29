@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Stock List
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:inventory' id=business.id %}">Inventory</a></li>
+<li>Stock List</li>
+{% endblock%}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Stock List</h5>
+                    </div>
+                </div>
+                <div class="panel-body p-20 table-responsive">
+
+                    <table id="example" class="display table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Name</th>
+                                <th>Product Cost</th>
+                                <th>Sell Price</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Name</th>
+                                <th>Product Cost</th>
+                                <th>Sell Price</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for product in products %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{product.name}}</td>
+                                <td>
+                                    {% if product.average_cost.product_cost %}
+                                    {{product.average_cost.product_cost|floatformat:2}} {{product.currency}}
+                                    {% else %}
+                                    0 {{product.currency}}
+                                    {% endif %}
+                                </td>
+                                <td>{{product.sell_price|floatformat:2}} {{product.currency}}</td>
+                                <td> 
+                                    {% if product.quantity <= product.min_quantity %}
+                                    <strong class="text-danger">{{product.quantity}}</strong>                                        
+                                    {% else %}
+                                    <strong class="text-success">{{product.quantity}}</strong>
+                                    {% endif %}
+                                </td>
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+                            <tr>
+                                <td colspan="9" class="text-center">
+                                    No Stock records
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+
+
+
+                        </tbody>
+                    </table>
+
+                    <!--Sample display-->
+                    <div id="display">
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+
+</div>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+
+<script>
+    $(function ($) {
+        $('#example').DataTable();
+    });
+</script>
+{% endblock %}

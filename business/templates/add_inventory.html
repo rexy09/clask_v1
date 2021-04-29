@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Add Inventory
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:inventory' id=business.id %}">Inventory</a></li>
+<li><a href="{% url 'business:inventory_list' id=business.id %}">Inventory List</a></li>
+<li>Add Inventory</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Inventory Info.</h5>
+                    </div>
+                </div>
+                <div class="panel-body p-20">
+
+                    <form class="col-md-10 col-md-offset-1" method="POST" action=".">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name2">Select Product</label>
+                            {{form.product|add_class:"form-control"}}
+                        </div>
+                        <div class="form-group">
+                            
+                            <label for="username2">Quantity</label>
+                            {{form.quantity|add_class:"form-control"|attr:"placeholder:Quantity"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Currency</label>
+                            {{form.currency|add_class:"form-control"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Product Cost</label>
+                            {{form.product_cost|add_class:"form-control"|attr:"placeholder:Product Cost"}}
+                        </div>
+                        <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i class="fa fa-check"></i>Submit</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+
+</div>
+
+{% endblock %}

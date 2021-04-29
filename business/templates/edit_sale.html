@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Edit Sale
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:sales_branch' id=business.id %}">Business Branch</a></li>
+<li>Edit Sale</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Sale Info.</h5>
+                    </div>
+                </div>
+                <div class="panel-body p-20">
+                    <form class="col-md-10 col-md-offset-1" method="POST" action=".">
+                        {% csrf_token %}
+                        <style>
+                            .product-disable {pointer-events: none;}
+                        </style>
+                        <div class="form-group">
+                            <label for="username2">Select Customer</label>
+                            <!-- <span class="fa fa-money-bill form-left-icon"></span> -->
+                            {{form.customer|add_class:"form-control product-disable"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="name2">Select Prodcut</label>
+                            <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                            {{form.inventory|add_class:"form-control product-disable"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">
+
+                            <label for="username2">Quantity</label>
+                            <!-- <span class="fa fa-sort-numeric-up-alt form-left-icon"></span> -->
+                            {{form.quantity|add_class:"form-control"|attr:"placeholder:Quantity"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Price</label>
+                            <!-- <span class="fa fa-coins form-left-icon"></span> -->
+                            {{form.price|add_class:"form-control"|attr:"placeholder:Price"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Total</label>
+                            <!-- <span class="fa fa-money-bill form-left-icon"></span> -->
+                            {{form.total|add_class:"form-control"|attr:"placeholder:Total"|attr:"readonly"}}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="city">Discount Unit</label>
+                                    {{form.discount_unit|add_class:"form-control"|attr:"placeholder:Discount Unit"|attr:"readonly"}}
+                                </div>
+                            </div>
+                            <!-- /.col-md-6 -->
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="state">Discount</label>
+                                    {{form.discount|add_class:"form-control"|attr:"placeholder:Discount"|attr:"readonly"}}
+                                </div>
+                            </div>
+                            <!-- /.col-md-6 -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="city">Tax Unit</label>
+                                    {{form.tax_unit|add_class:"form-control"|attr:"placeholder:Tax Unit"|attr:"readonly"}}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="state">Tax</label>
+                                    {{form.tax|add_class:"form-control"|attr:"placeholder:Tax"|attr:"readonly"}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Customer Paid</label>
+                            <!-- <span class="fa fa-money-bill form-left-icon"></span> -->
+                            {{form.amount_paid|add_class:"form-control"|attr:"placeholder:Customer Paid"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Due</label>
+                            <!-- <span class="fa fa-money-bill form-left-icon"></span> -->
+                            {{form.due|add_class:"form-control"|attr:"placeholder:Due"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Profit</label>
+                            <!-- <span class="fa fa-money-bill form-left-icon"></span> -->
+                            {{form.profit|add_class:"form-control"|attr:"placeholder:Profit"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Order No.</label>
+                            <!-- <span class="fa fa-money-bill form-left-icon"></span> -->
+                            {{form.order_no|add_class:"form-control"|attr:"placeholder:Order No."|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Status</label>
+                            <!-- <span class="fa fa-money-bill form-left-icon"></span> -->
+                            {{form.status|add_class:"form-control"|attr:"placeholder:Status"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Notes</label>
+                            {{form.note|add_class:"form-control"|attr:"placeholder:Notes"|attr:"rows:3"}}
+                        </div>
+                        <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                                class="fa fa-check"></i>Update</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+
+</div>
+
+<script>
+    var obj = {};
+    var profit;
+    var total;
+
+    $("#id_inventory").change(function () {
+        $.ajax({
+            url: "{% url 'business:get_inventory' %}",
+            dataType: "json",
+            data: {
+                inventory: $("#id_inventory").val(),
+            },
+            success: function (data) {
+                var $data = JSON.parse(data);
+                obj = $data;
+                $('#id_price').val($data['sell_price']);
+            }
+        });
+    });
+
+    $("#id_quantity").keyup(function () {
+
+        total = $("#id_quantity").val() * obj['sell_price'];
+
+        $('#id_total').val(total);
+
+        $('#id_amount_paid').val(total);
+
+        var cost = $("#id_quantity").val() * obj['product_cost'];
+
+        profit = total - cost;
+
+        $('#id_profit').val(profit);
+    });
+
+    // Discount fuction
+    $("#id_discount").keyup(function () {
+
+        var unit = $('#id_discount_unit').val();
+
+        console.log(unit);
+        if (unit == 'flat') {
+            if ($("#id_discount").val() != ''){
+                var amount = $("#id_discount").val();
+                var paid = $('#id_total').val() - amount;
+            
+                $('#id_amount_paid').val(paid);
+                $('#id_due').val(amount);
+
+                var p = profit - amount;
+                $('#id_profit').val(p);
+
+            }else{
+                $('#id_amount_paid').val($('#id_total').val());
+                $('#id_profit').val(profit);
+                $('#id_due').val(0);
+            }
+           
+
+        } else if (unit == '%') {
+            if ($("#id_discount").val() != ''){
+
+                var amount = ($("#id_discount").val()/100) * $('#id_total').val();
+
+                var paid = $('#id_total').val() - amount;
+            
+                $('#id_amount_paid').val(paid);
+                $('#id_due').val(amount);
+
+                var p = profit - amount;
+                $('#id_profit').val(p);
+
+
+            }else{
+                $('#id_amount_paid').val($('#id_total').val());
+                $('#id_profit').val(profit);
+                $('#id_due').val(0);
+            }
+
+        }
+
+    });
+</script>
+
+{% endblock %}

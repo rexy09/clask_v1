@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Payment{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:expenses' id=business.id %}">Expenses</a></li>
+<li><a href="{% url 'business:interest-list' id=business.id %}">Interest</a></li>
+<li>Payment</li>
+{% endblock%}
+
+{% block content %}
+
+  <div class="container-fluid">
+
+    <div class="row">   
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Expenses</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+        
+
+            <form class="" method="POST" action="">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="name2">Payment amount</label>
+                <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                {{payment_form.payment|add_class:"form-control"|attr:"placeholder:Amount"}}
+              </div>                                         
+              <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                  class="fa fa-check"></i>Submit</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+</div>
+
+</div>
+
+
+       
+{% endblock %}

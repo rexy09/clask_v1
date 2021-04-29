@@ -1,0 +1,250 @@
+{% load humanize %}
+{% load static %}
+<html>
+
+<head>
+    <title>Sales Report</title>
+    <style>
+        @page {
+            size: A4;
+            /* Change from the default size of A4 */
+            margin: 0.5cm;
+            /* Set margin on each page */
+            background-color: #f5f4f3;
+        }
+
+        header {
+            height: auto;
+            width: 100%;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        body {
+            background-color: #ffffff;
+            font-size: 12px;
+            font-family: 'Lucida Sans';
+            background-image: url("{% static 'img/potraits.png' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+            border-collapse: collapse;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: whitesmoke;
+        }
+        table th {
+            background-color: #7ebb45;
+            color: white;
+          }
+
+        table {
+            width: 100%;
+        }
+
+        th {
+            text-align: center;
+            padding: 5px;
+            font-size: 10px;
+        }
+
+        td {
+            text-align: center;
+            padding: 5px;
+            font-size: 10px;
+        }
+
+        /* Overall card styles */
+        #card {
+            height: 50px;
+            width: 115px;   
+            padding: 10px;
+            margin: 5px;
+            border-radius: 15px;
+        }
+
+        /* Overall status card styles */
+        #statuscards {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            padding: 0px;
+            align-items: flex-start;
+            justify-content: space-around;
+        }
+
+        .details {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            margin-right: 10px;
+            align-items: flex-end;
+        }
+
+        #numbers {
+            font-size: 1em;
+            font-weight: 700;
+
+        }
+
+        #title {
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        root {
+            --blue: #007bff;
+            --indigo: #6610f2;
+            --purple: #6f42c1;
+            --pink: #e83e8c;
+            --red: #dc3545;
+            --orange: #fd7e14;
+            --yellow: #ffc107;
+            --green: #28a745;
+            --teal: #20c997;
+            --cyan: #17a2b8;
+            --white: #fff;
+            --gray: #6c757d;
+            --gray-dark: #343a40;
+            --primary: #007bff;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="{% static 'img/report-heading.png' %}" alt="">
+    </header>
+    <br>    
+    <div>
+        <div id="statuscards">
+            <div id="card" style="background-color: #1774d6;">
+                <div class="details">
+                    <div id="numbers">
+                        {{summary.total_paid|floatformat:0|intcomma}}
+                    </div>
+                    <div id="title">
+                        Revenue
+                    </div>
+
+                </div>
+            </div>
+            <div id="card" style="background-color: #dc3545;">
+                <div class="details">
+                    <div id="numbers">
+                        {{summary.total_quantity}}
+                    </div>
+                    <div id="title">
+                        Quantity
+                    </div>
+
+                </div>
+            </div>
+            <div id="card" style="background-color:#28a745;">
+                <div class="details">
+                    <div id="numbers">
+                        {{summary.total_profit|floatformat:0|intcomma}}
+                    </div>
+                    <div id="title">
+                        Profit
+                    </div>
+
+                </div>
+            </div>
+            <div id="card" style="background-color: #17a2b8;">
+                <div class="details">
+                    <div id="numbers">
+                        {{summary.total_tax|floatformat:0|intcomma}}
+                    </div>
+                    <div id="title">
+                        Tax
+                    </div>
+
+                </div>
+            </div>
+            <div id="card" style="background-color: #343a40;">
+                <div class="details">
+                    <div id="numbers">
+                        {{summary.total_discount|floatformat:0|intcomma}}
+                    </div>
+                    <div id="title">
+                        Discount
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <br><br>
+        <h2 style="color: #28a745;">{{business.name}} Sale Report</h2>
+        <div class="table-responsive">
+            <table id="#table" class="display table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Profit</th>
+                        <th>Paid</th>
+                        <th>Discount</th>
+                        <th>Tax</th>
+                        <th>Order No.</th>
+                        <th>Date Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in sales %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{sale.inventory.product.name}}</td>
+                        <td>{{sale.quantity}}</td>
+                        <td>{{sale.total|floatformat:0|intcomma}} {{sale.inventory.product.currency}}</td>
+                        <td>{{sale.profit|floatformat:0|intcomma}} {{sale.inventory.product.currency}}</td>
+                        <td>{{sale.amount_paid|floatformat:0|intcomma}} {{sale.inventory.product.currency}}</td>
+                        <td>{{sale.discount}} {{sale.discount_unit}}</td>
+                        <td>{{sale.tax}} {{sale.tax_unit}}</td>
+                        <td>{{sale.order_no}}</td>
+                        <td>{{sale.created_at.date}}</td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="11" class="text-center">
+                            No Sale records
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</body>
+
+</html>

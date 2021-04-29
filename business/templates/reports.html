@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Reports
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li>Reports</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="{% url 'business:sales_time' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Sales</span>
+                <span class="bg-icon"><i class="fa fa-bar-chart" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="{% url 'business:inventory_product' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Inventory</span>
+                <span class="bg-icon"><i class="fa fa-product-hunt" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-success" href="{% url 'business:payroll-time' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Payroll</span>
+                <span class="bg-icon"><i class="fa fa-credit-card" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-primary" href="{% url 'business:opex-time' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">OPEX</span>
+                <span class="bg-icon"><i class="fa fa-cogs" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+    </div>
+    <div class="row mt-20">
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-warning" href="{% url 'business:customer-report' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Customers</span>
+                <span class="bg-icon"><i class="fa fa-users" style="padding: 12px;"></i></span>
+            </a>
+
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="{% url 'business:procurement_time' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Procurement</span>
+                <span class="bg-icon"><i class="fa fa-cubes" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

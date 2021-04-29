@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+Local Purchase Order
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:procurement_management' id=business.id %}">Procurement Management Unit</a></li>
+<li><a href="{% url 'business:local_purchase_order' id=business.id %}">Local Purchase Order List</a></li>
+<li>Local Purchase Order</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Local Purchase Order Info.</h5>
+                    </div>
+                </div>
+                <div class="panel-body p-20">
+                    <h5 class="m-10"><strong>SUPPLIER:</strong> {{local_purchase_order.supplier}}</h5>
+                    <h5 class="m-10"><strong>DELIVERY CENTER:</strong> {{local_purchase_order.delivery.location}}</h5>
+                    <h5 class="m-10"><strong>DATE:</strong> {{local_purchase_order.created_at.date}}</h5>
+
+                    <h5 class="m-10" style="float: right;"><strong>LPO NUMBER:</strong> {{local_purchase_order.lpo_no}}</h5>
+             
+                    <h5 class="m-10"><strong>PURCHASE ORDER</strong></h5>
+                    <div class="table-responsive">
+                        <table id="example" class="display table table-striped table-bordered" cellspacing="0"
+                            width="100%">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Description</th>
+                                    <th>Unit</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Description</th>
+                                    <th>Unit</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                {% for list in local_purchase_order.local_purchase_order_list.all %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{list.description}}</td>
+                                    <td>{{list.unit}}</td>
+                                    <td>{{list.quantity}}</td>
+                                    <td>{{list.price|intcomma}}</td>
+                                    <td>{{list.total|intcomma}}</td>
+                                   
+                                </tr>
+
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">
+                                        No Local Purchase Order records
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h5 style="float: right; margin: 0px;"><strong>Total:</strong> {{local_purchase_order.total|intcomma}}/=</h5>
+                    </div>
+                   <br><br><br>
+                    
+                    <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                        <div>
+                            <p>PREPARED BY: <i>{{local_purchase_order.employee.user_employee.full_name}}</i><br><strong>{{local_purchase_order.employee.user_employee.position}}</strong></p>
+                        </div>
+                        <div>
+                            <p><strong>DATE:</strong> {{local_purchase_order.created_at.date}}</p>
+                        </div>
+                    </div>
+                    
+                    {% if local_purchase_order.positive_check_list.first %}
+                    <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                        <div>
+                            <p>CHECKED BY: <i>{{local_purchase_order.positive_check_list.first.supervisor.user_employee.full_name}}</i><br><strong>{{local_purchase_order.positive_check_list.first.supervisor.user_employee.position}}</strong></p>
+                            
+                        </div>
+                        <div>
+                            <p><strong>DATE:</strong> {{local_purchase_order.positive_check_list.first.created_at.date}}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                        
+                    {% if local_purchase_order.positive_approve_list.first %}
+                    <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                        <div>
+                            <p>APPROVED BY: <i>{{local_purchase_order.positive_approve_list.first.supervisor.user_employee.full_name}}</i><br><strong>{{local_purchase_order.positive_approve_list.first.supervisor.user_employee.position}}</strong></p>
+                        </div>
+                        <div>
+                            <p><strong>DATE:</strong> {{local_purchase_order.positive_approve_list.first.created_at.date}}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                        
+                    {% if local_purchase_order.positive_authorize_list.first %}
+                    <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                        <div>
+                            <p>AUTHORISED BY: <i>{{local_purchase_order.positive_authorize_list.first.supervisor.user_employee.full_name}}</i><br><strong>{{local_purchase_order.positive_authorize_list.first.supervisor.user_employee.position}}</strong></p>
+                        </div>
+                        <div>
+                            <p><strong>DATE:</strong> {{local_purchase_order.positive_authorize_list.first.created_at.date}}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+    </div>
+</div>
+
+{% endblock %}

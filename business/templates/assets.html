@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Assets
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:accounts-home' id=business.id %}">Accounts</a></li>
+<li>Assets</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-success" href="{% url 'business:fixed_assets-list' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Fixed Assets</span>
+                <span class="bg-icon"><i class="fa fa-circle" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+        
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-primary" href="{% url 'business:current_assets-list' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Current Assets</span>
+                <span class="bg-icon"><i class="fa fa-circle-thin" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

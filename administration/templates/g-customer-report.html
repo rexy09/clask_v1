@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}General Customer Report{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'administration:general_reports' %}">General Reports</a></li>
+<li>General Customer Report</li>
+{% endblock%}
+
+{% block content %}
+
+<style type="text/css">
+  .title-container {
+    display: flex;
+    margin-bottom: 50px;
+    width: 100%;
+    justify-content: center;
+    align-items: baseline;
+    align-content: center;
+  }
+
+  .title-head {
+    width: 100%;
+  }
+
+  .search {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  #user-input {
+    width: 70%;
+    border-radius: 12px;
+    padding-left: 45px;
+    font-size: 15px;
+  }
+
+  @keyframes blinker {
+    from {
+      opacity: 1.0;
+    }
+
+    to {
+      opacity: 0.0;
+    }
+  }
+
+  .blink {
+    text-decoration: blink;
+    animation-name: blinker;
+    animation-duration: 0.6s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    animation-direction: alternate;
+  }
+
+  #chartdiv-1 {
+    width: 100%;
+    height: 500px;
+  }
+
+
+
+  .input-icons i {
+    position: absolute;
+  }
+
+  .input-icons {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .icon {
+    padding: 10px;
+    color: black;
+    min-width: 50px;
+    text-align: center;
+  }
+</style>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel p-20">
+
+      <div>
+        <img src="{% static 'img/report-heading.png' %}" alt="" width="100%">
+      </div>
+
+      <div style="padding: 20px !important;">
+        <div class="row mb-5">
+
+          <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-success" href="#">
+              <span class="number counter">{{loyal}}</span>
+              <span class="name">Loyal customers</span>
+              <span class="bg-icon"><i class="fa fa-users" style="padding: 12px;"></i></span>
+            </a>
+          </div>
+
+          <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="#">
+              <span class="number counter">{{normal}}</span>
+              <span class="name">Normal</span>
+              <span class="bg-icon"><i class="fa fa-users" style="padding: 12px;"></i></span>
+            </a>
+          </div>
+
+          <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-primary" href="#">
+              <span class="number counter">{{other}}</span>
+              <span class="name">Other customers</span>
+              <span class="bg-icon"><i class="fa fa-users" style="padding: 12px;"></i></span>
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="title-container">
+        <div class="title-head">
+          <h3 style="font-weight: 700 !important;">Customer Report</h3>
+        </div>
+        <a href="{% url 'administration:customer_report' %}?pdf=1" class="btn btn-primary" style="float: right; "><i
+            class="fa fa-print fa-lg" style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+      </div>
+      <div class="input-icons">
+        <i id="search-icon" class="fa fa-search icon" style="font-size: 14px;"></i>
+        <input id="user-input" class="inpu-field w-30" placeholder="Name or phone number" style="outline: none;">
+      </div>
+      <div class="card-body bg-white">
+        <div class="table-responsive">
+
+          <div id="replaceable-content" class="col">
+
+            {% include 'customer-results.html' %}
+
+          </div>
+          {{categories|json_script:"category"}}
+
+
+          <div>
+            <h3 class="text-bold" style="font-weight: 500;padding-left: 0px;"><u>Customer categories</u></h3>
+          </div>
+          <div id="chartdiv-1" class="p-20"></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>  
+</div>
+<!-- Resources -->
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+
+<script>
+  $(function () {
+    $('.counter').counterUp();
+  });
+</script>
+
+<!-- Chart code -->
+<script>
+  var value = JSON.parse(document.getElementById('category').textContent);
+  am4core.ready(function () {
+
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    var chart = am4core.create("chartdiv-1", am4charts.PieChart3D);
+    chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+    chart.legend = new am4charts.Legend();
+
+    chart.data = value; // Data
+
+    var series = chart.series.push(new am4charts.PieSeries3D());
+    series.dataFields.value = "value";
+    series.dataFields.category = "name";
+
+  }); // end am4core.ready()
+</script>
+
+
+<script>
+  const user_input = $("#user-input")
+  const search_icon = $('#search-icon')
+  const artists_div = $('#replaceable-content')
+  const endpoint = "{% url 'administration:customer_report' %}"
+  const delay_by_in_ms = 700
+  let scheduled_function = false
+
+
+  let ajax_call = function (endpoint, request_parameters) {
+    $.getJSON(endpoint, request_parameters)
+      .done(response => {
+        // fade out the artists_div, then:
+        artists_div.fadeTo('slow', 0).promise().then(() => {
+          // replace the HTML contents
+          artists_div.html(response['html_from_view'])
+          // fade-in the div with new contents
+          artists_div.fadeTo('slow', 1)
+          // stop animating search icon
+          search_icon.removeClass('blink')
+        })
+      })
+  }
+
+
+  user_input.on('keyup', function () {
+
+    const request_parameters = {
+      q: $(this).val() // value of user_input: the HTML element with ID user-input
+    }
+
+    // start animating the search icon with the CSS class
+    search_icon.addClass('blink')
+
+    // if scheduled_function is NOT false, cancel the execution of the function
+    if (scheduled_function) {
+      clearTimeout(scheduled_function)
+    }
+
+    // setTimeout returns the ID of the function to be executed
+    scheduled_function = setTimeout(ajax_call, delay_by_in_ms, endpoint, request_parameters)
+  })
+</script>
+
+
+{% endblock %}

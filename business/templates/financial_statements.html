@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Financial Statements
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li>Financial Statements</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="{% url 'business:income_statement_time' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Income Statement</span>
+                <span class="bg-icon"><i class="fa fa-file-text-o" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-success" href="{% url 'business:balance-sheet' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Balance Sheet</span>
+                <span class="bg-icon"><i class="fa fa-file-text" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-primary" href="{% url 'business:cashflow_time' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Cashbook</span>
+                <span class="bg-icon"><i class="fa fa-area-chart" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-warning" href="{% url 'business:trial-balance-time' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Trial Balance</span>
+                <span class="bg-icon"><i class="fa fa-area-chart" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+    </div>
+   
+</div>
+{% endblock %}

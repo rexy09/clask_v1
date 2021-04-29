@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+Procurement Report
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:reports' id=business.id %}">Reports</a></li>
+<li><a href="{% url 'business:procurement_time' id=business.id %}">Procurements</a></li>
+<li>Report</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+
+            <div class="panel">
+                <div>
+                    <img src="{% static 'img/report-heading.png' %}" alt="" width="100%">
+                </div>
+                <div style="padding: 20px !important;">
+                    <div class="row mb-5">
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat bg-success" href="#">
+                                <span
+                                    class="number counter">{{summary.total_local_purchase|floatformat:0|intcomma}}</span>
+                                <span class="name">Local Purchase Order</span>
+                                <span class="bg-icon"><i class="fa fa-money" style="padding: 12px;"></i></span>
+                            </a>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat bg-primary" href="#">
+                                <span class="number counter">{{summary.total_purchase|floatformat:0|intcomma}}</span>
+                                <span class="name">Purchase Order</span>
+                                <span class="bg-icon"><i class="fa fa-money" style="padding: 12px;"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h3 style="float: left; font-weight: 700 !important; color: #28a745 !important;" class="">
+                            Procurement Report</h3>
+                        <a href="{% url 'business:procurement_report' id=business.id d=d %}?fr={{fr}}&to={{to}}&pdf=1"
+                            class="btn btn-primary" style="float: right; margin: 20px;" target="_blank"><i class="fa fa-print fa-lg"
+                                style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+                        <a href="{% url 'business:procurement_report' id=business.id  d=d %}?fr={{fr}}&to={{to}}&xl=2"
+                            class="btn btn-success" style="float: right; margin: 20px 0px 0px 0px;" target="_blank"><i
+                                class="fa fa-file-excel-o fa-lg"
+                                style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+                    </div>
+                </div>
+                <div class="panel-body p-20 ">
+                    <div class="panel-title">
+                        <h5 style="font-weight: 700;">Local Purchase Report</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="example" class="display table table-striped table-bordered" cellspacing="0"
+                            width="100%">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>LPO Number</th>
+                                    <th>Supplier</th>
+                                    <th>Delivery</th>
+                                    <th>Prepared By</th>
+                                    <th>Total</th>
+                                    <th>Date Created</th>
+                                    <th>List</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for local in local_purchases %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{local.lpo_no}}</td>
+                                    <td>{{local.supplier}}</td>
+                                    <td>{{local.delivery.location}}</td>
+                                    <td>
+                                        <small>{{local.employee.user_employee.full_name}}
+                                            ({{local.employee.user_employee.position}})</small>
+                                    </td>
+                                    <td>{{local.total}}/=</td>
+                                    <td>{{local.created_at.date}}</td>
+                                    <td>
+                                        <table id="example" class="display table table-striped table-bordered"
+                                            cellspacing="0" width="100%" style="margin-bottom: 5px;">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Description</th>
+                                                    <th>Unit</th>
+                                                    <th>Quantity</th>
+                                                    <th>Price</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {% for list in local.local_purchase_order_list.all %}
+                                                <tr>
+                                                    <td>{{forloop.counter}}</td>
+                                                    <td>{{list.description}}</td>
+                                                    <td>{{list.unit}}</td>
+                                                    <td>{{list.quantity}}</td>
+                                                    <td>{{list.price|intcomma}}</td>
+                                                    <td>{{list.total|intcomma}}</td>
+
+                                                </tr>
+
+                                                {% empty %}
+                                                <tr>
+                                                    <td colspan="6" class="text-center">
+                                                        No Local Purchase Order records
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                        <p style="float: right; margin: 5px !important;"><strong>Total:</strong>
+                                            {{local.total}}/=</p>
+
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+                                <tr>
+                                    <td colspan="11" class="text-center">
+                                        No Local Purchase Order records
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="panel-title mt-20">
+                        <h5 style="font-weight: 700;">Purchase Report</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="example" class="display table table-striped table-bordered" cellspacing="0"
+                            width="100%">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>PO Number</th>
+                                    <th>Supplier</th>
+                                    <th>Delivery</th>
+                                    <th>Prepared By</th>
+                                    <th>Shipping</th>
+                                    <th>Customs</th>
+                                    <th>Tax</th>
+                                    <th>Total</th>
+                                    <th>Date Created</th>
+                                    <th>List</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for local in purchases %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{local.po_no}}</td>
+                                    <td>{{local.supplier}}</td>
+                                    <td>{{local.delivery.location}}</td>
+                                    <td><small>{{local.employee.user_employee.full_name}}
+                                            ({{local.employee.user_employee.position}})</small>
+                                    </td>
+                                    <td>{{local.shipping}}</td>
+                                    <td>{{local.customs}}</td>
+                                    <td>{{local.tax}}</td>
+                                    <td>{{local.total}}/=</td>
+                                    <td>{{local.created_at.date}}</td>
+                                    <td>
+                                        <table id="example" class="display table table-striped table-bordered"
+                                            cellspacing="0" width="100%" style="margin-bottom: 5px;">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Description</th>
+                                                    <th>Unit</th>
+                                                    <th>Quantity</th>
+                                                    <th>Price</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {% for list in local.purchase_order_list.all %}
+                                                <tr>
+                                                    <td>{{forloop.counter}}</td>
+                                                    <td>{{list.description}}</td>
+                                                    <td>{{list.unit}}</td>
+                                                    <td>{{list.quantity}}</td>
+                                                    <td>{{list.price|intcomma}}</td>
+                                                    <td>{{list.total|intcomma}}</td>
+
+                                                </tr>
+
+                                                {% empty %}
+                                                <tr>
+                                                    <td colspan="6" class="text-center">
+                                                        No Purchase Order records
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                        <p style="float: right; margin: 5px !important;"><strong>Total:</strong>
+                                            {{local.total}}/=</p>
+
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+                                <tr>
+                                    <td colspan="11" class="text-center">
+                                        No Purchase Order records
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    $(function () {
+        $('.counter').counterUp();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+{% load django_template_maths %}
+{% load custom_template_tags %}
+{% load humanize %}
+
+
+{% block title %} Payroll Report {% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'administration:general_reports' %}">General Reports</a></li>
+<li><a href="{% url 'administration:payroll-time' %}">Time</a></li>
+<li>Payroll Report</li>
+{% endblock%}
+
+{% block content %}
+
+<style type="text/css">
+  #chartdiv-1 {
+    width: 100%;
+    height: 500px;
+  }
+
+
+  #chartdiv-2 {
+    width: 100%;
+    height: 500px;
+  }
+
+  .total-expenses {
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-content: space-around;
+    /*width: 100%;*/
+    /*border: 1px solid black;*/
+    padding: 0 50px 0 0;
+
+  }
+</style>
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+
+      <div class="panel">
+        <div>
+          <img src="{% static 'img/report-heading.png' %}" alt="" width="100%">
+        </div>
+
+        <div style="padding: 20px !important;">
+          <div style="padding: 20px !important;">
+            <div class="row mb-5">
+
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <a class="dashboard-stat bg-danger" href="#">
+                  <span class="number counter">{{employees}}</span>
+                  <span class="name">Employees</span>
+                  <span class="bg-icon"><i class="fa fa-users" style="padding: 10px;"></i></span>
+                </a>
+              </div>
+
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <a class="dashboard-stat bg-success" href="#">
+                  <span class="number counter">{{takehome_total}}</span>
+                  <span class="name">Takehome Salary</span>
+                  <span class="bg-icon"><i class="fa fa-money" style="padding: 10px;"></i></span>
+                </a>
+              </div>
+
+
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <a class="dashboard-stat bg-primary" href="#">
+                  <span class="number counter">{{paye}}</span>
+                  <span class="name">Paye</span>
+                  <span class="bg-icon"><i class="fa fa-money" style="padding: 10px;"></i></span>
+                </a>
+              </div>
+
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <a class="dashboard-stat bg-warning " href="#">
+                  <span class="number counter">{{nssf}}</span>
+                  <span class="name">Nssf</span>
+                  <span class="bg-icon"><i class="fa fa-money" style="padding: 10px;"></i></span>
+                </a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <a class="dashboard-stat bg-warning" href="#``````````````">
+                  <span class="number counter">{{wcf}}</span>
+                  <span class="name">Wcf</span>
+                  <span class="bg-icon"><i class="fa fa-money" style="padding: 10px;"></i></span>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <a class="dashboard-stat bg-danger" href="#``````````````">
+                  <span class="number counter">{{bonus}}</span>
+                  <span class="name">Bonus</span>
+                  <span class="bg-icon"><i class="fa fa-money" style="padding: 10px;"></i></span>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <a class="dashboard-stat bg-success" href="#``````````````">
+                  <span class="number counter">{{overtime}}</span>
+                  <span class="name">Overtime</span>
+                  <span class="bg-icon"><i class="fa fa-money" style="padding: 10px;"></i></span>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <a class="dashboard-stat bg-primary" href="#``````````````">
+                  <span class="number counter">{{loan_board}}</span>
+                  <span class="name">Heslb</span>
+                  <span class="bg-icon"><i class="fa fa-money" style="padding: 10px;"></i></span>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-top:3px;">
+                <a class="dashboard-stat bg-danger" href="#``````````````">
+                  <span class="number counter">{{deduction}}</span>
+                  <span class="name">Deduction</span>
+                  <span class="bg-icon"><i class="fa fa-money" style="padding: 10px;"></i></span>
+                </a>
+              </div>   
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-top:3px;">
+                <a class="dashboard-stat bg-success" href="#``````````````">
+                  <span class="number counter">{{sdl}}</span>
+                  <span class="name">Sdl</span>
+                  <span class="bg-icon"><i class="fa fa-money" style="padding: 10px;"></i></span>
+                </a>
+              </div>                          
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-heading">
+          <div class="panel-title">
+            <h3 style="float: left; font-weight: 700 !important; " class="">Payroll Report</h3>
+            <a href="{% url 'administration:payroll-report' d=day %}?fr={{fr}}&to={{to}}&pdf=1"
+              class="btn btn-primary" style="float: right; margin: 20px;"><i class="fa fa-print fa-lg"
+                style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+            <a href="{% url 'administration:payroll-report' d=day %}?fr={{fr}}&to={{to}}&xl=1"
+            class="btn btn-success" style="float: right; margin: 20px 0px 0px 0px;" target="_blank"><i class="fa fa-file-excel-o fa-lg"
+              style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>                
+          </div>
+        </div>
+        <br><br><br>
+
+        <div class="panel-body bg-white">
+          <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Employee ID</th>
+                  <th>Name</th>
+                  <th>Position</th>
+                  <th>Department</th>
+                  <th>Salary</th>
+                  <th>Takehome Salary</th>
+                  <th>Paye</th>
+                  <th>Nssf</th>
+                  <th>Heslb</th>
+                  <th>Wcf</th>
+                  <th>Bonus</th>
+                  <th>Overtime</th>
+                  <th>Deduction</th>
+                  <th>Sdl</th>
+                </tr>
+              </thead>
+
+              {% if takehome %}
+              <tbody id="myTable">
+                {% for worker in takehome %}
+
+                <tr>
+                  <td>{{forloop.counter}}</td>
+                  <td>{{worker.payroll.employee.id_no}}</td>
+                  <td>{{worker.payroll.employee.full_name}}</td>
+                  <td>{{worker.payroll.employee.position}}</td>
+                  <td>{{worker.payroll.employee.department}}</td>
+                  <td>{{worker.payroll.employee.salary|intcomma}}</td>
+                  <td>{{worker.salary|intcomma}}</td>
+                  {% if worker.payroll.paye %}
+
+                  {% if 'nssf' in worker.payroll.tax_rate %}
+                  {% setvar worker.payroll.employee.salary|mul:0.1|remove_decimal as nssf_funds  %}
+                  {% else %}
+                  {% setvar 0 as nssf_funds %}
+                  {% endif %}
+                  {% if 'wcf' in worker.payroll.tax_rate %}
+                  {% setvar worker.payroll.employee.salary|mul:0.01|remove_decimal as wcf_funds  %}
+                  {% else %}
+                  {% setvar 0 as wcf_funds %}
+                  {% endif %}
+                  {% if 'loan board' in worker.payroll.tax_rate %}
+                  {% setvar worker.payroll.employee.salary|mul:0.15|add_decimal:1 as loan_funds  %}
+                  {% else %}
+                  {% setvar 0 as loan_funds %}
+                  {% endif %}
+
+                  {% setvar worker.salary|add:nssf_funds|add:wcf_funds|add:loan_funds as takehome %}
+
+                  {% if worker.payroll.employee.employee_loan.debt %}
+                  <td>
+                    {{worker.payroll.employee.salary|sub:takehome|add:worker.payroll.bonus|add:worker.payroll.overtime|sub:worker.payroll.deduction|sub:worker.payroll.sdl_amount|sub:worker.payroll.employee.employee_loan.amount_paid|intcomma}}
+                  </td>
+                  {% else %}
+                  <td>
+                    {{worker.payroll.employee.salary|sub:takehome|add:worker.payroll.bonus|add:worker.payroll.overtime|sub:worker.payroll.deduction|sub:worker.payroll.sdl_amount|intcomma}}
+                  </td>                  
+                  {% endif %}
+
+                  {% else %}
+                  <td>0</td>
+                  {% endif %}
+
+                  {% if 'nssf' in worker.payroll.tax_rate %}
+
+                  <td>{{worker.payroll.employee.salary|mul:0.1|remove_decimal|intcomma}}</td>
+                  {% else %}
+                  <td>0</td>
+                  {% endif %}
+                  {% if 'loan board' in worker.payroll.tax_rate %}
+                  <td>{% widthratio worker.payroll.employee.salary 100 15 %}</td>
+                  {% else %}
+                  <td>0</td>
+                  {% endif %}
+                  {% if 'wcf' in worker.payroll.tax_rate %}
+                  <td>{{worker.payroll.employee.salary|mul:0.01|remove_decimal|intcomma}}</td>
+                  {% else %}
+                  <td>0</td>
+                  {% endif %}
+                  <td>{{worker.payroll.bonus|intcomma}}</td>
+                  <td>{{worker.payroll.overtime|intcomma}}</td>
+                  <td>{{worker.payroll.deduction|intcomma}}</td>
+                  <td>{{worker.payroll.sdl_amount|intcomma}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <th colspan="5" class="text-center">Total</th>
+                 
+                  <th>{{salaries_total}}</th>
+                  <th>{{takehome_total}}</th>
+                  <th>{{paye}}</th>
+                  <th>{{nssf}}</th>
+                  <th>{{loan_board}}</th>
+                  <th>{{wcf}}</th>
+                  <th>{{bonus}}</th>
+                  <th>{{overtime}}</th>
+                  <th>{{deduction}}</th>
+                  <th>{{sdl}}</th>
+                </tr>
+                {% else %}
+                <tr>
+                  <td colspan="15" class="text-center">0 employees</td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {{funds|json_script:'fund'}}
+        {{extras|json_script:'extra'}}
+
+        <div class="total-expenses">
+          <h4 class="text-bold" style="margin-right: 20px;margin-top: 0px !important;"><strong>Total Expenses:</strong> {{total_expenses}}/=</h4>
+        </div>
+
+        <!-- HTML -->
+        <div>
+          <h3 class="text-bold" style="font-weight: 500;padding-left: 30px;"><u>Taxes</u></h3>
+        </div>
+        <div id="chartdiv-1" class="p-20"></div>
+
+
+        <div>
+          <h3 class="text-bold" style="font-weight: 500;padding-left: 30px;"><u>Takehome and extras</u></h3>
+        </div>
+        <div id="chartdiv-2" class="p-20"></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Resources -->
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+<script>
+  $(function () {
+    $('.counter').counterUp();
+  });
+</script>
+
+<!-- Chart code -->
+<script>
+  var value = JSON.parse(document.getElementById('fund').textContent);
+  var values = JSON.parse(document.getElementById('extra').textContent);
+  am4core.ready(function () {
+
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    var chart = am4core.create("chartdiv-1", am4charts.PieChart3D);
+    chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+    chart.legend = new am4charts.Legend();
+
+    chart.data = value; // Data
+
+    var series = chart.series.push(new am4charts.PieSeries3D());
+    series.dataFields.value = "cost";
+    series.dataFields.category = "name";
+
+  }); // end am4core.ready()
+  am4core.ready(function () {
+
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    var chart = am4core.create("chartdiv-2", am4charts.PieChart3D);
+    chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+    chart.legend = new am4charts.Legend();
+
+    chart.data = values; // Data
+
+    var series = chart.series.push(new am4charts.PieSeries3D());
+    series.dataFields.value = "cost";
+    series.dataFields.category = "name";
+
+  }); // end am4core.ready()    
+</script>
+
+{% endblock %}

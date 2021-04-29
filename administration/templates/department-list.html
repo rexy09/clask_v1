@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+Department List
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'administration:administrator' %}">Administrator</a></li>
+<li>Department List</li>
+{% endblock%}
+
+{% block content %}
+
+<style type="text/css">
+  .fab {
+    background: #4B9848;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    text-align: center;
+    color: #FFF;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5), 3px 3px 3px rgba(0, 0, 0, 0.25);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.6667em;
+    display: inline-block;
+    cursor: default;
+    padding-top: 8px;
+  }
+
+  .fab span {
+    vertical-align: text-bottom;
+    font-size: 45px;
+  }
+</style>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+
+
+<div class="container">
+  <div class="row">
+
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <h5>Department List</h5>
+          </div>
+        </div>
+        <div class="panel-body p-20 table-responsive">
+
+          <div class="card-body bg-white">
+            <div class="table-responsive">
+              <table class="table table-bordered" width="100%" cellspacing="0" id="example">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Action</th>
+
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Action</th>
+                  </tr>
+                </tfoot>
+                {% if departments %}
+                <tbody id="myTable">
+                  {% for department in departments %}
+
+                  <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{department.name}}</td>
+                    <td>
+                      <a href="#" class="hvr-icon-push hvr-shrink" data-micron-timing="linear" data-micron="bounce"
+                        data-micron-duration=".">
+                        <button class="btn btn-success btn-sm" data-micron-timing="linear" data-micron="bounce"
+                          data-micron-duration="." data-toggle="modal" data-target="#DepartmentDetailslModal"
+                          data-name="{{department.name}}">
+                          <i class="fa fa-eye hvr-icon"></i>
+                          view
+                        </button>
+                      </a>
+
+                      <a href="{% url 'administration:department-edit' id=department.id %}"
+                        class="hvr-icon-push hvr-shrink" data-micron-timing="linear" data-micron="bounce"
+                        data-micron-duration=".">
+                        <button class="btn btn-info btn-sm" data-micron-timing="linear" data-micron="bounce"
+                          data-micron-duration=".">
+                          <i class="fa fa-edit hvr-icon"></i>
+                          edit
+                        </button>
+                      </a>
+
+                      <!--                               <a href="#" class="hvr-icon-push hvr-shrink" data-micron-timing="linear" data-micron="bounce" data-micron-duration="." >
+                                    <button class="btn btn-danger btn-sm" data-micron-timing="linear" data-micron="bounce" data-micron-duration=".">
+                                      <i class="fa fa-trash hvr-icon"></i>
+                                      delete
+                                    </button>
+                                  </a> -->
+
+                    </td>
+                  </tr>
+                  {% endfor %}
+
+                  {% else %}
+                  <tr>
+                    <td colspan="3" class="text-center">0 Departments</td>
+                  </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fab" id="masterfab" data-toggle="modal" data-target="#DepartmentRegistrationModal"><span>+</span>
+      </div>
+
+      <!-- Button trigger modal -->
+      <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
+  Add Payroll
+</button> -->
+
+      <!-- Modal -->
+      <div class="modal fade" id="DepartmentRegistrationModal" data-backdrop="static" data-keyboard="false"
+        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Add Department</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="container-fluid">
+                <form class="" method="POST" action="">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="name2">Department</label>
+                    <!-- <span class="fa fa-building form-left-icon"></span> -->
+                    {{dpt_form.name|add_class:"form-control"|attr:"placeholder:Department name"}}
+                  </div>
+
+                  <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                      class="fa fa-check"></i>Submit</button>
+
+                </form>
+
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Department Details Modal -->
+      <div class="modal fade" id="DepartmentDetailslModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Department Details</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="container-fluid">
+                <div><strong>Name:</strong> <span id="name"></span></div>
+                <div id="type"></div>
+                <div id="cost"></div>
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End of Department details modal -->
+
+
+    </div>
+
+    <script>
+      $('#DepartmentDetailslModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var name = button.data('name') // Extract info from data-* attributes
+        console.log(cost)
+        console.log(name)
+        console.log(type)
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        modal.find('.modal-title').text('Department Details')
+        modal.find('.modal-body #name').text(name)
+        // modal.find('.modal-body #type').text(type)
+        // modal.find('.modal-body #cost').text(cost)
+      })
+    </script>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js">
+    </script>
+
+
+    <script>
+      $(function ($) {
+        $('#example').DataTable();
+      });
+    </script>
+
+    {% endblock %}

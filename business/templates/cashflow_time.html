@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Cashbook
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:financial_statements' id=business.id %}">Financial Statements</a></li>
+<li>Cashbook</li>
+{% endblock%}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+
+			<div class="panel">
+				<div class="panel-heading">
+					<div class="panel-title">
+						<h5>Choose Time Frame</h5>
+					</div>
+				</div>
+				<div class="panel-body p-20">
+					
+					<form class="" action="{% url 'business:cashflow' id=business.id %}" method="GET">
+						<label class="">From</label>
+						<input type="date" class="form-control mb-2 mr-sm-2" id="" placeholder="Date" name="fr" required>
+						<label class="">To</label>
+						<input type="date" class="form-control mb-2 mr-sm-2" id="" placeholder="Date" name="to" required>
+						<button type="submit" class="btn btn-primary mb-2">Search</button>
+					</form>
+
+				</div>
+			</div>
+		</div>
+		<!-- /.col-md-6 -->
+
+	</div>
+
+</div>
+{% endblock %}

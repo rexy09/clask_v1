@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Add Customer
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:customer_list' id=business.id %}">Customer List</a></li>
+<li>Add Customer</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Customer Info.</h5>
+                    </div>
+                </div>
+                <div class="panel-body p-20">
+                    <form class="col-md-10 col-md-offset-1" method="POST" action=".">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name2">Full Name</label>
+                            <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                            {{form.full_name|add_class:"form-control"|attr:"placeholder:Full Name"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Company Name</label>
+                            <!-- <span class="fa fa-sort-numeric-up-alt form-left-icon"></span> -->
+                            {{form.company|add_class:"form-control"|attr:"placeholder:Company Name"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Gender</label>
+                            <!-- <span class="fa fa-money-bill form-left-icon"></span> -->
+                            {{form.gender|add_class:"form-control"|attr:"placeholder:Gender"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Contact</label>
+                            <!-- <span class="fa fa-coins form-left-icon"></span> -->
+                            {{form.contact|add_class:"form-control"|attr:"placeholder:Contact"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Email</label>
+                            <!-- <span class="fa fa-money-bill form-left-icon"></span> -->
+                            {{form.email|add_class:"form-control"|attr:"placeholder:Email"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Address</label>
+                            <!-- <span class="fa fa-money-bill form-left-icon"></span> -->
+                            {{form.address|add_class:"form-control"|attr:"placeholder:Address"}}
+                        </div>
+                        <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i class="fa fa-check"></i>Submit</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+
+</div>
+
+{% endblock %}

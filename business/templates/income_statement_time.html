@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Income Statement
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:financial_statements' id=business.id %}">Financial Statements</a></li>
+<li>Income Statement</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+
+			<div class="panel">
+				<div class="panel-heading">
+					<div class="panel-title">
+						<h5>Choose Time Frame</h5>
+					</div>
+				</div>
+				<div class="panel-body p-20">
+					<div id="" class="list-group">
+						<a class="list-group-item" href="{% url 'business:income_statement' id=business.id d=1 %}">Last 30
+							Days</a>
+						<a class="list-group-item"
+							href="{% url 'business:income_statement' id=business.id d=2 %}">Last 3 Month</a>
+						<a class="list-group-item" href="{% url 'business:income_statement' id=business.id d=3 %}">Semi Annual</a>
+						<a class="list-group-item" href="{% url 'business:income_statement' id=business.id d=4 %}">Annual</a>
+					</div>
+					<hr>
+					<form class="" action="{% url 'business:income_statement' id=business.id d=5 %}" method="GET">
+						<label class="">Year</label>
+						<input type="number" min="2000"  class="form-control mb-2 mr-sm-2" id="" placeholder="Year" name="year" required>
+						<button type="submit" class="btn btn-primary mb-2">Search</button>
+					</form>
+
+				</div>
+			</div>
+		</div>
+		<!-- /.col-md-6 -->
+
+	</div>
+
+</div>
+{% endblock %}

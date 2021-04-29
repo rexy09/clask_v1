@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+
+{% block title %}Employee edit{% endblock %}
+
+
+{% block breadcrumb %}
+<li><a href="{% url 'human_resource:employee-list' %}">Employees</a></li>
+<li>Employee Edit</li>
+{% endblock%}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <h5>Employee</h5>
+                </div>
+            </div>
+            <div class="panel-body">
+
+                <form class="col-md-10 col-md-offset-1" method="POST" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="name2">Full Name</label>
+                        {{e_form.full_name|add_class:"form-control"|attr:"placeholder:Enter full name"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Birth Date</label>
+                        {{e_form.birth_date|add_class:"form-control"|attr:"placeholder:Birth Date"|attr:"type:date"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="name2">Gender</label>
+                        {{e_form.gender|add_class:"form-control"|attr:"placeholder:Gender"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Marital status</label>
+                        {{e_form.marital_status|add_class:"form-control"|attr:"placeholder:Marital status"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Email</label>
+                        {{e_form.email|add_class:"form-control"|attr:"placeholder:Email"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Work phone</label>
+                        {{e_form.work_phone|add_class:"form-control"|attr:"placeholder:Work phone"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Mobile phone</label>
+                        {{e_form.mobile_phone|add_class:"form-control"|attr:"placeholder:Mobile phone"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Address</label>
+                        {{e_form.address|add_class:"form-control"|attr:"placeholder:Address"}}
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="name2">Nationality</label>
+                        {{e_form.nationality|add_class:"form-control"|attr:"placeholder:Nationality"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Country</label>
+                        {{e_form.country|add_class:"form-control"|attr:"placeholder:Country"}}
+                    </div>
+
+
+                    <div class="form-group ">
+                        <label for="name2">City</label>
+                        {{e_form.city|add_class:"form-control"|attr:"placeholder:City"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Postal code</label>
+                        {{e_form.postal_code|add_class:"form-control"|attr:"placeholder:Postal Code"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Employment type</label>
+                        {{e_form.employment_type|add_class:"form-control"|attr:"placeholder:Employment type"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Department</label>
+                        {{e_form.department|add_class:"form-control"|attr:"placeholder:Department"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="name2">Position</label>
+                        {{e_form.position|add_class:"form-control"|attr:"placeholder:Position"}}
+                    </div>
+                    <label>Other Position</label>
+                    <input type="checkbox" id="myCheck" onchange="handleChange()">
+                    <div class="form-group" id="other-position" style="display: none;">
+                        {{e_form.other_position|add_class:"form-control"|attr:"placeholder:Position"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="name2">Business</label>
+                        {{e_form.business|add_class:"form-control"|attr:"placeholder:Business name"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="name2">Branch</label>
+                        {{e_form.branch|add_class:"form-control"|attr:"placeholder:Branch"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Salary</label>
+                        {{e_form.salary|add_class:"form-control"|attr:"placeholder:Salary"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Starting date</label>
+                        {{e_form.starting_date|add_class:"form-control"|attr:"placeholder:Starting date"|attr:"type:date"}}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="name2">Contract Period</label>
+                            {{e_form.contract_period|add_class:"form-control"|attr:"placeholder:Contract period"}}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="name2">Duration</label>
+                            {{e_form.period|add_class:"form-control"|attr:"placeholder:Duration"}}
+                        </div>
+
+                    </div>
+
+                    <div class="form-group ">
+                        <label for="name2">NIDA</label>
+                        {{e_form.nida|add_class:"form-control"|attr:"placeholder:NIDA number"}}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name2">Performance</label>
+                        {{e_form.performance|add_class:"form-control"|attr:"placeholder:Performance"}}
+                    </div>
+
+
+                    <div class="form-group ">
+                        <label for="name2">Profile photo</label>
+                        {{e_form.image}}
+                    </div>
+
+                    <div class="form-group ">
+                        <label for="name2">Signature</label>
+                        {{e_form.signature}}
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                            class="fa fa-check"></i>Submit</button>
+                </form>
+
+
+                <!-- /.col-md-12 -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.col-md-6 -->
+
+<script type="text/javascript">
+    const handleChange = () => {
+        var check = document.getElementById("myCheck").checked;
+        if (check === true) {
+            var element = document.getElementById("other-position");
+            for (var x = 0; x <= 1; x++) {
+                element.style.display = "block";
+            }
+        } else {
+            var element = document.getElementById("other-position");
+            for (var x = 0; x <= 1; x++) {
+                element.style.display = "none";
+            }
+        }
+    }
+</script>
+
+{% endblock %}

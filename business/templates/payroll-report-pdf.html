@@ -1,0 +1,402 @@
+{% load humanize %}
+{% load static %}
+{% load django_template_maths %}
+{% load custom_template_tags %}
+<html>
+
+<head>
+    <title>Payroll Report</title>
+    <style>
+        @page {
+            size: A4;
+            /* Change from the default size of A4 */
+            margin: 0.5cm;
+            /* Set margin on each page */
+            background-color: #f5f4f3;
+
+        }
+
+        header {
+            height: auto;
+            width: 100%;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        body {
+            background-color: #ffffff;
+            font-size: 12px;
+            font-family: 'Lucida Sans';
+            background-image: url("{% static 'img/potraits.png' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+            border-collapse: collapse;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: whitesmoke;
+        }
+
+        table th {
+            background-color: #7ebb45;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th {
+            text-align: center;
+            padding: 5px;
+            font-size: 5px;
+        }
+
+        td {
+            text-align: center;
+            padding: 5px;
+            font-size: 5px;
+        }
+
+        /* Overall card styles */
+        #card {
+            height: 50px;
+            width: 150px;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 15px;
+        }
+
+        /* Overall status card styles */
+        #statuscards {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            padding: 0px;
+            align-items: flex-start;
+            justify-content: space-around;
+        }
+
+        .details {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            margin-right: 10px;
+            align-items: flex-end;
+        }
+
+        #numbers {
+            font-size: 1em;
+            font-weight: 700;
+
+        }
+
+        #title {
+            font-size: 1em;
+            font-weight: 500;
+            width: 100%;
+            white-space: pre;
+        }
+
+        root {
+            --blue: #007bff;
+            --indigo: #6610f2;
+            --purple: #6f42c1;
+            --pink: #e83e8c;
+            --red: #dc3545;
+            --orange: #fd7e14;
+            --yellow: #ffc107;
+            --green: #28a745;
+            --teal: #20c997;
+            --cyan: #17a2b8;
+            --white: #fff;
+            --gray: #6c757d;
+            --gray-dark: #343a40;
+            --primary: #007bff;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+
+        .total-expenses {
+            display: flex !important;
+            justify-content: flex-end !important;
+            align-content: space-around;
+            /*width: 100%;*/
+            /*border: 1px solid black;*/
+            padding: 0 50px 0 0;
+
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="{% static 'img/report-heading.png' %}" alt="">
+    </header>
+    <br>
+    <div>
+        <div id="statuscards">
+            <div id="card" style="background-color: #EC3F3F;">
+                <div class="details">
+                    <div id="numbers">
+                        {{employees}}
+                    </div>
+                    <div id="title">
+                        Employees
+                    </div>
+                </div>
+            </div>
+            <div id="card" style="background-color: #46BB56;">
+                <div class="details">
+                    <div id="numbers">
+                        {{takehome_total}}
+                    </div>
+                    <div id="title">
+                        Takehome
+                    </div>
+
+                </div>
+            </div>
+            <div id="card" style="background-color: #3DADD4;">
+                <div class="details">
+                    <div id="numbers">
+                        {{paye}}
+                    </div>
+                    <div id="title">
+                        Paye
+                    </div>
+
+                </div>
+            </div>
+            <div id="card" style="background-color: #F89A00;">
+                <div class="details">
+                    <div id="numbers">
+                        {{nssf}}
+                    </div>
+                    <div id="title">
+                        Nssf
+                    </div>
+
+                </div>
+            </div>
+            <div id="card" style="background-color: #F89A00;">
+                <div class="details">
+                    <div id="numbers">
+                        {{wcf}}
+                    </div>
+                    <div id="title">
+                        Wcf
+                    </div>
+
+                </div>
+            </div>
+            <div id="card" style="background-color: #EC3F3F;">
+                <div class="details">
+                    <div id="numbers">
+                        {{bonus}}
+                    </div>
+                    <div id="title">
+                        Bonus
+                    </div>
+
+                </div>
+            </div>
+            <div id="card" style="background-color: #46BB56;">
+                <div class="details">
+                    <div id="numbers">
+                        {{overtime}}
+                    </div>
+                    <div id="title">
+                        Overtime
+                    </div>
+
+                </div>
+            </div>
+            <div id="card" style="background-color: #3DADD4;">
+                <div class="details">
+                    <div id="numbers">
+                        {{loan_board}}
+                    </div>
+                    <div id="title">
+                        Loan Board
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div id="statuscards">
+        <div id="card" style="background-color: #EC3F3F;">
+            <div class="details">
+                <div id="numbers">
+                    {{deduction}}
+                </div>
+                <div id="title">
+                    Deduction
+                </div>
+
+            </div>
+        </div> 
+        <div id="card" style="background-color: #46BB56;">
+            <div class="details">
+                <div id="numbers">
+                    {{sdl}}
+                </div>
+                <div id="title">
+                    Sdl
+                </div>
+
+            </div>
+        </div> 
+        </div>              
+    </div>
+    <div>
+        <br><br>
+        <h2 style="color: #28a745;">{{business.name}} Payroll Report</h2>
+
+        <div class="">
+        </div>
+        <div class="table-responsive">
+            <table id="example" class="display table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Employee ID</th>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>Department</th>
+                        <th>Salary</th>
+                        <th>Takehome Salary</th>
+                        <th>Paye</th>
+                        <th>Nssf</th>
+                        <th>Loan Board</th>
+                        <th>Wcf</th>
+                        <th>Bonus</th>
+                        <th>Overtime</th>
+                        <th>Deduction</th>
+                        <th>Sdl</th>
+                    </tr>
+                </thead>
+
+                {% if takehome %}
+                <tbody id="myTable">
+                    {% for worker in takehome %}
+
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{worker.payroll.employee.id_no}}</td>
+                        <td>{{worker.payroll.employee.full_name}}</td>
+                        <td>{{worker.payroll.employee.position}}</td>
+                        <td>{{worker.payroll.employee.department}}</td>
+                        <td>{{worker.payroll.employee.salary|intcomma}}</td>
+                        <td>{{worker.salary|intcomma}}</td>
+                        {% if worker.payroll.paye %}
+
+                        {% if 'nssf' in worker.payroll.tax_rate %}
+                        {% setvar worker.payroll.employee.salary|mul:0.1|remove_decimal as nssf_funds  %}
+                        {% else %}
+                        {% setvar 0 as nssf_funds %}
+                        {% endif %}
+                        {% if 'wcf' in worker.payroll.tax_rate %}
+                        {% setvar worker.payroll.employee.salary|mul:0.01|remove_decimal as wcf_funds  %}
+                        {% else %}
+                        {% setvar 0 as wcf_funds %}
+                        {% endif %}
+                        {% if 'loan board' in worker.payroll.tax_rate %}
+                        {% setvar worker.payroll.employee.salary|mul:0.15|add_decimal:1 as loan_funds  %}
+                        {% else %}
+                        {% setvar 0 as loan_funds %}
+                        {% endif %}
+
+
+                      {% if worker.payroll.employee.employee_loan.debt %}
+                      <td>
+                        {{worker.payroll.employee.salary|sub:takehome|add:worker.payroll.bonus|add:worker.payroll.overtime|sub:worker.payroll.deduction|sub:worker.payroll.sdl_amount|sub:worker.payroll.employee.employee_loan.amount_paid|intcomma}}
+                      </td>
+                      {% else %}
+
+                        <td>{{worker.payroll.employee.salary|add:worker.payroll.bonus|add:worker.payroll.overtime|sub:worker.salary|sub:nssf_funds|remove_decimal|sub:wcf_funds|sub:loan_funds|sub:worker.payroll.deduction|sub:worker.payroll.sdl_amount|intcomma}}
+                        </td>
+                        {% endif %}
+
+                        {% else %}
+                        <td>0</td>
+                        {% endif %}
+
+                        {% if 'nssf' in worker.payroll.tax_rate %}
+
+                        <td>{{worker.payroll.employee.salary|mul:0.1|remove_decimal|intcomma}}</td>
+                        {% else %}
+                        <td>0</td>
+                        {% endif %}
+                        {% if 'loan board' in worker.payroll.tax_rate %}
+                        <td>{% widthratio worker.payroll.employee.salary 100 15 %}</td>
+                        {% else %}
+                        <td>0</td>
+                        {% endif %}
+                        {% if 'wcf' in worker.payroll.tax_rate %}
+                        <td>{{worker.payroll.employee.salary|mul:0.01|remove_decimal|intcomma}}</td>
+                        {% else %}
+                        <td>0</td>
+                        {% endif %}
+                        <td>{{worker.payroll.bonus|intcomma}}</td>
+                        <td>{{worker.payroll.overtime|intcomma}}</td>
+                        <td>{{worker.payroll.deduction|intcomma}}</td>
+                        <td>{{worker.payroll.sdl_amount|intcomma}}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <th colspan="5" class="text-center">Total</th>
+                        <th>{{salaries_total}}</th>
+                        <th>{{takehome_total}}</th>
+                        <th>{{paye}}</th>
+                        <th>{{nssf}}</th>
+                        <th>{{loan_board}}</th>
+                        <th>{{wcf}}</th>
+                        <th>{{bonus}}</th>
+                        <th>{{overtime}}</th>
+                        <th>{{deduction}}</th>
+                        <th>{{sdl}}</th>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="13" class="text-center">0 employees</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="total-expenses">
+        <h2 style="color: #28a745;margin-right: 20px;">Total Expenses:</h2>
+
+        <h2 style="color: #28a745;">{{total_expenses}}/=</h2>
+    </div>
+</body>
+
+<script>
+    console.log('Hello');
+</script>
+
+
+</html>

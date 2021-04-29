@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Procurement Management Unit
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li>Procurement Management Unit</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-success" href="{% url 'business:local_purchase_order' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Local Purchase Order</span>
+                <span class="bg-icon"><i class="fa fa-cubes" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-success" href="{% url 'business:purchase_order' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Purchase Order</span>
+                <span class="bg-icon"><i class="fa fa-cubes" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="{% url 'business:suppliers' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Suppliers</span>
+                <span class="bg-icon"><i class="fa fa-truck" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+
+        <!-- 
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-primary" href="{% url 'business:sales_branch' id=business.id %}">
+                <span class="number counter">1,411</span>
+                <span class="name">Sales</span>
+                <span class="bg-icon"><i class="fa fa-bar-chart-o" style="padding: 12px;"></i></span>
+            </a>
+
+            <div class="src-code">
+                <pre class="language-html"><code class="language-html">
+                &lt;a class="dashboard-stat bg-primary" href="#"&gt;
+                    &lt;span class="number counter"&gt;1,411&lt;/span&gt;
+                    &lt;span class="name"&gt;Comments&lt;/span&gt;
+                    &lt;span class="bg-icon"&gt;&lt;i class="fa fa-comments"&gt;&lt;/i&gt;&lt;/span&gt;
+                &lt;/a&gt;
+                &lt;!-- /.dashboard-stat --&gt;
+
+                &lt;!-- ========== JS ========== --&gt;
+                &lt;script&gt;
+                    $(function(){
+                        $('.counter').counterUp();
+                    });
+                &lt;/script&gt;
+                    </code></pre>
+            </div>
+        </div>        
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-primary" href="{% url 'business:expenses' id=business.id %}">
+                <span class="number counter">1,411</span>
+                <span class="name">Expenses</span>
+                <span class="bg-icon"><i class="fa fa-calculator"  style="padding: 12px;"></i></span>
+            </a>
+
+            <div class="src-code">
+                <pre class="language-html"><code class="language-html">
+                &lt;a class="dashboard-stat bg-primary" href="#"&gt;
+                    &lt;span class="number counter"&gt;1,411&lt;/span&gt;
+                    &lt;span class="name"&gt;Comments&lt;/span&gt;
+                    &lt;span class="bg-icon"&gt;&lt;i class="fa fa-comments"&gt;&lt;/i&gt;&lt;/span&gt;
+                &lt;/a&gt;
+                &lt;!-- /.dashboard-stat --&gt;
+
+                &lt;!-- ========== JS ========== --&gt;
+                &lt;script&gt;
+                    $(function(){
+                        $('.counter').counterUp();
+                    });
+                &lt;/script&gt;
+                    </code></pre>
+            </div>
+        </div> -->
+
+    </div>
+
+    <!-- /.row -->
+    <!-- <div class="row" style="margin-top: 2vh;">
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-warning" href="#">
+                <span class="number counter">5,551</span>
+                <span class="name">Procurement Management Unit</span>
+                <span class="bg-icon"><i class="fa fa-tasks"  style="padding: 12px;"></i></span>
+            </a>
+            <div class="src-code">
+                <pre class="language-html"><code class="language-html">
+                &lt;a class="dashboard-stat bg-warning" href="#"&gt;
+                    &lt;span class="number counter"&gt;5,551&lt;/span&gt;
+                    &lt;span class="name"&gt;Bank Credits&lt;/span&gt;
+                    &lt;span class="bg-icon"&gt;&lt;i class="fa fa-bank"&gt;&lt;/i&gt;&lt;/span&gt;
+                &lt;/a&gt;
+                &lt;!-- /.dashboard-stat --&gt;
+
+                &lt;!-- ========== JS ========== --&gt;
+                &lt;script&gt;
+                    $(function(){
+                        $('.counter').counterUp();
+                    });
+                &lt;/script&gt;
+                    </code></pre>
+            </div>
+        </div>
+
+        
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-success" href="{% url 'business:fixed-asset-home' id=business.id %}">
+                <span class="number counter">16,710</span>
+                <span class="name">Fixed Assets Management</span>
+                <span class="bg-icon"><i class="fa fa-home"  style="padding: 12px;"></i></span>
+            </a>
+            <div class="src-code">
+                <pre class="language-html"><code class="language-html">
+                    &lt;a class="dashboard-stat bg-success" href="#"&gt;
+                        &lt;span class="number counter"&gt;16,710&lt;/span&gt;
+                        &lt;span class="name"&gt;Thumbs Up&lt;/span&gt;
+                        &lt;span class="bg-icon"&gt;&lt;i class="fa fa-thumbs-o-up"&gt;&lt;/i&gt;&lt;/span&gt;
+                    &lt;/a&gt;
+                    &lt;!-- /.dashboard-stat --&gt;
+
+                        &lt;!-- ========== JS ========== --&gt;
+                        &lt;script&gt;
+                            $(function(){
+                                $('.counter').counterUp();
+                            });
+                        &lt;/script&gt;
+                                                                </code></pre>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-warning" href="#">
+                <span class="number counter">5,551</span>
+                <span class="name">Reports</span>
+                <span class="bg-icon"><i class="fa fa-clone" style="padding: 12px;"></i></span>
+            </a>
+
+            <div class="src-code">
+                <pre class="language-html"><code class="language-html">
+                &lt;a class="dashboard-stat bg-warning" href="#"&gt;
+                    &lt;span class="number counter"&gt;5,551&lt;/span&gt;
+                    &lt;span class="name"&gt;Bank Credits&lt;/span&gt;
+                    &lt;span class="bg-icon"&gt;&lt;i class="fa fa-bank"&gt;&lt;/i&gt;&lt;/span&gt;
+                &lt;/a&gt;
+                &lt;!-- /.dashboard-stat --&gt;
+
+                &lt;!-- ========== JS ========== --&gt;
+                &lt;script&gt;
+                    $(function(){
+                        $('.counter').counterUp();
+                    });
+                &lt;/script&gt;
+                    </code></pre>
+            </div>
+        </div>
+
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="#">
+                <span class="number counter">322</span>
+                <span class="name">Financial Statements</span>
+                <span class="bg-icon"><i class="fa fa-money"  style="padding: 12px;"></i></span>
+            </a>
+            <div class="src-code">
+                <pre class="language-html"><code class="language-html">
+                &lt;a class="dashboard-stat bg-danger" href="#"&gt;
+                    &lt;span class="number counter"&gt;322&lt;/span&gt;
+                    &lt;span class="name"&gt;Total Tickets&lt;/span&gt;
+                    &lt;span class="bg-icon"&gt;&lt;i class="fa fa-ticket"&gt;&lt;/i&gt;&lt;/span&gt;
+                &lt;/a&gt;
+                &lt;!-- /.dashboard-stat --&gt;
+
+                &lt;!-- ========== JS ========== --&gt;
+                &lt;script&gt;
+                    $(function(){
+                        $('.counter').counterUp();
+                    });
+                &lt;/script&gt;
+                    </code></pre>
+            </div>
+        </div>
+
+    </div> -->
+
+    <!-- <div class="row" style="margin-top: 2vh;">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="#">
+                <span class="number counter">322</span>
+                <span class="name">Accounts</span>
+                <span class="bg-icon"><i class="fa fa-money"  style="padding: 12px;"></i></span>
+            </a>
+            
+
+            <div class="src-code">
+                <pre class="language-html"><code class="language-html">
+                &lt;a class="dashboard-stat bg-danger" href="#"&gt;
+                    &lt;span class="number counter"&gt;322&lt;/span&gt;
+                    &lt;span class="name"&gt;Total Tickets&lt;/span&gt;
+                    &lt;span class="bg-icon"&gt;&lt;i class="fa fa-ticket"&gt;&lt;/i&gt;&lt;/span&gt;
+                &lt;/a&gt;
+                &lt;!-- /.dashboard-stat --&gt;
+
+                &lt;!-- ========== JS ========== --&gt;
+                &lt;script&gt;
+                    $(function(){
+                        $('.counter').counterUp();
+                    });
+                &lt;/script&gt;
+                    </code></pre>
+            </div>
+            
+        </div>
+    </div> -->
+</div>
+{% endblock %}

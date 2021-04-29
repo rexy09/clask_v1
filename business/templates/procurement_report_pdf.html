@@ -1,0 +1,346 @@
+{% load humanize %}
+{% load static %}
+{% load django_template_maths %}
+<html>
+
+<head>
+    <title>Procurement Report</title>
+    <style>
+        @page {
+            size: A4;
+            /* Change from the default size of A4 */
+            margin: 0.5cm;
+            /* Set margin on each page */
+            background-color: #f5f4f3;
+
+        }
+
+        header {
+            height: auto;
+            width: 100%;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        body {
+            background-color: #ffffff;
+            font-size: 12px;
+            font-family: 'Lucida Sans';
+            background-image: url("{% static 'img/potraits.png' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+            border-collapse: collapse;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: whitesmoke;
+        }
+
+        table th {
+            background-color: #7ebb45;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th {
+            text-align: center;
+            padding: 1px;
+            font-size: 8px;
+        }
+
+        td {
+            text-align: center;
+            padding: 1px;
+            font-size: 8px;
+        }
+
+        /* Overall card styles */
+        #card {
+            height: 50px;
+            width: 150px;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 15px;
+        }
+
+        /* Overall status card styles */
+        #statuscards {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            padding: 0px;
+            align-items: flex-start;
+            justify-content: space-around;
+        }
+
+        .details {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            margin-right: 10px;
+            align-items: flex-end;
+        }
+
+        #numbers {
+            font-size: 1em;
+            font-weight: 700;
+
+        }
+
+        #title {
+            font-size: 1em;
+            font-weight: 500;
+            width: 100%;
+            white-space: pre;
+        }
+
+        root {
+            --blue: #007bff;
+            --indigo: #6610f2;
+            --purple: #6f42c1;
+            --pink: #e83e8c;
+            --red: #dc3545;
+            --orange: #fd7e14;
+            --yellow: #ffc107;
+            --green: #28a745;
+            --teal: #20c997;
+            --cyan: #17a2b8;
+            --white: #fff;
+            --gray: #6c757d;
+            --gray-dark: #343a40;
+            --primary: #007bff;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="{% static 'img/report-heading.png' %}" alt="">
+    </header>
+    <br>
+    <div>
+        <div id="statuscards">
+            <div id="card" style="background-color: #1774d6;">
+                <div class="details">
+                    <div id="numbers">
+                        {{summary.total_local_purchase|floatformat:0|intcomma}}
+                    </div>
+                    <div id="title">
+                        Local Purchase Order
+                    </div>
+
+                </div>
+            </div>
+            <div id="card" style="background-color: #dc3545;">
+                <div class="details">
+                    <div id="numbers">
+                        {{summary.total_purchase|floatformat:0|intcomma}}
+                    </div>
+                    <div id="title">
+                        Purchase Order
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <br><br>
+        <h2 style="color: #28a745;">{{business.name}} Procurement Report</h2>
+
+        <div class="">
+            <h5 style="font-weight: 700;">Local Purchase Report</h5>
+        </div>
+        <div class="table-responsive">
+            <table id="example" class="display table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>LPO Number</th>
+                        <th>Supplier</th>
+                        <th>Delivery</th>
+                        <th>Prepared By</th>
+                        <th>Date Created</th>
+                        <th>List</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for local in local_purchases %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{local.lpo_no}}</td>
+                        <td>{{local.supplier}}</td>
+                        <td>{{local.delivery.location}}</td>
+                        <td><small>
+                                {{local.employee.user_employee.position}}</small></td>
+                        <td>{{local.created_at.date}}</td>
+
+                        <td>
+                            <table id="example" class="display table table-striped table-bordered" cellspacing="0"
+                                width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Description</th>
+                                        <th>Unit</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for list in local.local_purchase_order_list.all %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{list.description}}</td>
+                                        <td>{{list.unit}}</td>
+                                        <td>{{list.quantity}}</td>
+                                        <td>{{list.price|intcomma}}</td>
+                                        <td>{{list.total|intcomma}}</td>
+                                    </tr>
+
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">
+                                            No Local Purchase Order records
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <p style="float: right; margin: 5px !important;"><strong>Total:</strong>
+                                {{local.total}}/=</p>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">
+                            No Local Purchase Order records
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="">
+            <h5 style="font-weight: 700;">Purchase Report</h5>
+        </div>
+        <div class="table-responsive">
+            <table id="example" class="display table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>PO Number</th>
+                        <th>Supplier</th>
+                        <th>Delivery</th>
+                        <th>Prepared By</th>
+                        <th>Shipping</th>
+                        <th>Customs</th>
+                        <th>Tax</th>
+                        <th>Date Created</th>
+                        <th>List</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for local in purchases %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{local.po_no}}</td>
+                        <td>{{local.supplier}}</td>
+                        <td>{{local.delivery.location}}</td>
+                        <td>
+                            <small>{{local.employee.user_employee.position}}</small>
+                        </td>
+                        <td>{{local.shipping}}</td>
+                        <td>{{local.customs}}</td>
+                        <td>{{local.tax}}</td>
+                        <td>{{local.created_at.date}}</td>
+
+                        <td>
+                            <table id="example" class="display table table-striped table-bordered" cellspacing="0"
+                                width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Description</th>
+                                        <th>Unit</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for list in local.purchase_order_list.all %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{list.description}}</td>
+                                        <td>{{list.unit}}</td>
+                                        <td>{{list.quantity}}</td>
+                                        <td>{{list.price|intcomma}}</td>
+                                        <td>{{list.total|intcomma}}</td>
+
+                                    </tr>
+
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">
+                                            No Purchase Order records
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+
+                                </tbody>
+                            </table>
+                            <p style="float: right; margin: 5px !important;"><strong>Total:</strong>
+                                {{local.total}}/=</p>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="10" class="text-center">
+                            No Purchase Order records
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block title %}Check Account{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:accounts-home' id=business.id %}">Accounts</a></li>
+<li><a href="{% url 'business:bank-accounts' id=business.id %}">Bank Accounts</a></li>
+<li>Check Account</li>
+{% endblock%}
+
+{% block content %}
+
+<style type="text/css">
+  .fab {
+    background: #4B9848;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    text-align: center;
+    color: #FFF;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5), 3px 3px 3px rgba(0, 0, 0, 0.25);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.6667em;
+    display: inline-block;
+    cursor: default;
+    padding-top: 8px;
+  }
+
+  .fab span {
+    vertical-align: text-bottom;
+    font-size: 45px;
+  }
+
+  #transfer {
+    position: fixed;
+    bottom: 120px;
+    right: 20px;
+  }
+</style>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{message.tags}}">
+        {{message}}
+      </div>
+      {% endfor %}
+      {% endif %}
+      <div class="panel p-20">
+        <div>
+          <img src="{% static 'img/report-heading.png' %}" alt="" width="100%">
+        </div>
+
+        <div>
+          <h1 class="text-bold" style="font-weight: 700;padding-bottom:20px;padding-top:20px;">Check Account Balance
+          </h1>
+        </div>
+
+        <div class="panel-body bg-white">
+          <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Opening Balance</th>
+                  <th>Balance</th>
+                </tr>
+              </thead>
+              {% if check_account %}
+              <tbody id="myTable">
+                <tr>
+                  <th>
+                    <h3 style="margin: 0px !important;">{{opening_balance|intcomma}}</h3>
+                  </th>
+                  <td>
+                    <h3 style="margin: 0px !important;">{{check_account.balance|intcomma}}</h3>
+                  </td>
+                </tr>
+                {% else %}
+                <tr>
+                  <td colspan="2" class="text-center">0 Balance</td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+{% if check_account %}
+{% if check_account.balance != 0 %}
+<button class="btn btn-success btn-rounded btn-wide pull-right" id="transfer" data-toggle="modal"
+  data-target="#TransactionModal"><i class="fa fa-check"></i>Transfer to Saving Account</button>
+<div class="fab" id="masterfab" data-toggle="modal" data-target="#CheckAccountModal"><span>+</span></div>
+{% elif check_account.balance == 0 %}
+<div class="fab" id="masterfab" data-toggle="modal" data-target="#CheckAccountModal"><span>+</span></div>
+{% endif %}
+{% else %}
+<div class="fab" id="masterfab" data-toggle="modal" data-target="#CheckAccountModal"><span>+</span></div>
+{% endif %}
+
+<!-- Check Initialization Modal -->
+<div class="modal fade" id="CheckAccountModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Add Amount</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <form class="" method="POST" action="">
+            {% csrf_token %}
+
+            <div class="form-group">
+              <label for="name2">Amount</label>
+              <!-- <span class="fa fa-money form-left-icon"></span> -->
+              {{account_form.balance|add_class:"form-control"|attr:"placeholder: Add amount"}}
+            </div>
+
+            <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                class="fa fa-check"></i>Submit</button>
+
+          </form>
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Transfer Modal -->
+<div class="modal fade" id="TransactionModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Transfer Amount</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <form action="{% url 'business:check-account' id=business.id  trans=True %}" method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+              <label for="name2">From</label>
+              <!-- <span class="fa fa-money form-left-icon"></span> -->
+              {{transaction_form.transaction_from|add_class:"form-control"|attr:"placeholder: Account Name"}}
+            </div>
+
+            <div class="form-group">
+              <label for="name2">To</label>
+              <!-- <span class="fa fa-money form-left-icon"></span> -->
+              {{transaction_form.transaction_to|add_class:"form-control"|attr:"placeholder: Account Name"}}
+            </div>
+
+            <div class="form-group">
+              <label for="name2">Amount</label>
+              <!-- <span class="fa fa-money form-left-icon"></span> -->
+              {{transaction_form.amount|add_class:"form-control"|attr:"placeholder: Add amount"}}
+            </div>
+
+            <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                class="fa fa-check"></i>Submit</button>
+
+          </form>
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+
+{% endblock %}

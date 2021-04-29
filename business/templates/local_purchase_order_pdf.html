@@ -1,0 +1,158 @@
+{% load humanize %}
+{% load static %}
+<html>
+
+<head>
+    <title>Local Purchase Order</title>
+    <style>
+        @page {
+            size: A4;
+            /* Change from the default size of A4 */
+            margin: 1.0cm;
+            /* Set margin on each page */
+
+        }
+
+        header {
+            height: auto;
+            width: 100%;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        body {
+            background-color: #ffffff;
+            font-size: 13px;
+            font-family: 'Lucida Sans';
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid rgb(179, 179, 179);
+            border-collapse: collapse;
+        }
+
+        #table tr:nth-child(even) {
+            background-color: rgb(240, 240, 240);
+        }
+
+        #table tr:nth-child(odd) {
+            background-color: #fff;
+        }
+
+        .table {
+            width: 100%;
+        }
+
+        th {
+            text-align: center;
+            padding: 5px;
+        }
+
+        td {
+            text-align: center;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="{% static 'img/report-heading.png' %}" alt="">
+    </header>
+    <div>
+        <p class="m-10"><strong>SUPPLIER:</strong> {{purchase_order.supplier}}</p>
+        <p><strong>DELIVERY CENTER:</strong> {{purchase_order.delivery.location}}</p>
+        <p><strong>DATE:</strong> {{purchase_order.created_at.date}}</p>
+
+        <p style="float: right;"><strong>LPO NUMBER:</strong> {{purchase_order.lpo_no}}</p>
+
+        <p style="float: left;"><strong>LOCAL PURCHASE ORDER</strong></p>
+        <div class="table-responsive">
+            <table id="example" class="display table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>S/N</th>
+                        <th>Description</th>
+                        <th>Unit</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for list in purchase_order.local_purchase_order_list.all %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{list.description}}</td>
+                        <td>{{list.unit}}</td>
+                        <td>{{list.quantity}}</td>
+                        <td>{{list.price|intcomma}}</td>
+                        <td>{{list.total|intcomma}}</td>
+
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            No Lpcal Purchase Order records
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <p style="float: right;"><strong>Total:</strong> {{purchase_order.total|intcomma}}/=</p>
+        </div>
+       <br><br><br>
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+            <div>
+                <p>PREPARED BY: <i>{{purchase_order.employee.user_employee.full_name}}</i><br><strong>{{purchase_order.employee.user_employee.position}}</strong></p>
+                <img src="{{purchase_order.employee.user_employee.signature.url}}" alt="" style="width: 75px; height: auto;">
+                <div style="background-color: rgb(51, 51, 51);height: 0.1px; width: 75px;"></div>
+            </div>
+            <div>
+                <p><strong>DATE:</strong> {{purchase_order.created_at.date}}</p>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+            <div>
+                <p>CHECKED BY: <i>{{purchase_order.positive_check_list.first.supervisor.user_employee.full_name}}</i><br><strong>{{purchase_order.positive_check_list.first.supervisor.user_employee.position}}</strong></p>
+                <img src="{{purchase_order.positive_check_list.first.supervisor.user_employee.signature.url}}" alt="" style="width: 75px; height: auto;">
+                <div style="background-color: rgb(51, 51, 51);height: 0.1px; width: 75px;"></div>
+            </div>
+            <div>
+                <p><strong>DATE:</strong> {{purchase_order.positive_check_list.first.created_at.date}}</p>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+            <div>
+                <p>APPROVED BY: <i>{{purchase_order.positive_approve_list.first.supervisor.user_employee.full_name}}</i><br><strong>{{purchase_order.positive_approve_list.first.supervisor.user_employee.position}}</strong></p>
+                <img src="{{purchase_order.positive_approve_list.first.supervisor.user_employee.signature.url}}" alt="" style="width: 75px; height: auto;">
+                <div style="background-color: rgb(51, 51, 51);height: 0.1px; width: 75px;"></div>
+            </div>
+            <div>
+                <p><strong>DATE:</strong> {{purchase_order.positive_approve_list.first.created_at.date}}</p>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+            <div>
+                <p>AUTHORISED BY: <i>{{purchase_order.positive_authorize_list.first.supervisor.user_employee.full_name}}</i><br><strong>{{purchase_order.positive_authorize_list.first.supervisor.user_employee.position}}</strong></p>
+                <img src="{{purchase_order.positive_authorize_list.first.supervisor.user_employee.signature.url}}" alt="" style="width: 75px; height: auto;">
+                <div style="background-color: rgb(51, 51, 51);height: 0.1px; width: 75px;"></div>
+            </div>
+            <div>
+                <p><strong>DATE:</strong> {{purchase_order.positive_authorize_list.first.created_at.date}}</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

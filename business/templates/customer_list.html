@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Customer List
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li>Customer List</li>
+{% endblock%}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Customer List</h5>
+                        <!-- <a href="{% url 'business:add_customer' id=business.id %}" class="btn btn-success text-light"><i class="fa fa-plus"></i> Customer</a> -->
+                    </div>
+                </div>
+                <div class="panel-body p-20 table-responsive">
+
+                    <table id="example" class="display table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Full Name</th>
+                                <th>Company</th>
+                                <th>Contact</th>
+                                <th>Email</th>
+                                <th>Gender</th>
+                                <th>Date Created</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Full Name</th>
+                                <th>Company</th>
+                                <th>Contact</th>
+                                <th>Email</th>
+                                <th>Gender</th>
+                                <th>Date Created</th>
+                                <th>Action</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for customer in customers %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{customer.full_name}}</td>
+                                <td>{{customer.company}}</td>
+                                <td>{{customer.contact}}</td>
+                                <td>{{customer.email}}</td>
+                                <td>{{customer.gender}}</td>
+                                <td>{{customer.created_at.date}}</td>
+                                <td>
+                                    <a href="{% url 'business:edit_customer' id=customer.id %}" class="btn btn-primary">
+                                        <i class="fa fa-edit" style="margin: 0px !important;"></i> 
+                                    </a>
+                                    <a href="">
+                                        <i class="far fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                                
+                            </tr>
+                              
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center">
+                                    No Customer records
+                                </td>
+                            </tr>
+                            {% endfor %}
+                           
+                            
+
+
+                        </tbody>
+                    </table>
+
+                    <!--Sample display-->
+                    <div id="display">
+                        
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+    <div class="fab" id="masterfab" data-toggle="modal" data-target="#expenseModal"> <a href="{% url 'business:add_customer' id=business.id %}"><span>+</span></a></div>
+</div>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+
+<script>
+    $(function ($) {
+        $('#example').DataTable();
+    });
+</script>
+{% endblock %}

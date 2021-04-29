@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %} Loans{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:expenses' id=business.id %}">Expenses</a></li>
+<li>Loan List</li>
+{% endblock%}
+
+{% block content %}
+
+<style type="text/css">
+  .fab {
+    background: #4B9848;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    text-align: center;
+    color: #FFF;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5), 3px 3px 3px rgba(0, 0, 0, 0.25);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.6667em;
+    display: inline-block;
+    cursor: default;
+    padding-top: 8px;
+  }
+
+  .fab span {
+    vertical-align: text-bottom;
+    font-size: 45px;
+  }
+  .expenseData{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+</style>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+
+<div class="container-fluid">
+  <div class="row">
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{message.tags}}">
+    {{message}}
+  </div>
+  {% endfor %}
+  {% endif %}    
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel-body bg-white p-20">
+        <div class="table-responsive">
+          <table class="table table-bordered" width="100%" cellspacing="0" id="example">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Loan amount</th>
+                <th>Loan date</th>
+                <th>Return date</th>
+                <th>Return Amount</th>
+                <th>Remaining debt</th>
+
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Loan amount</th>
+                <th>Loan date</th>
+                <th>Return date</th>
+                <th>Return Amount</th>
+                <th>Remaining debt</th>
+
+              </tr>
+            </tfoot>
+            {% if loans %}
+            <tbody id="myTable">
+              {% for loan in loans %}
+
+              <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{loan.employee.full_name}}</td>
+                <td>{{loan.loan_amount}}</td>
+                <td>{{loan.loan_date}}</td>
+                <td>{{loan.due_date}}</td>
+                <td>{{loan.amount_paid}}</td>
+                <td>{{loan.remaining_debt}}</td>
+              </tr>
+              {% endfor %}
+
+              {% else %}
+              <tr>
+                <td colspan="6" class="text-center" >0 Loans</td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fab" id="masterfab" data-toggle="modal" data-target="#loanModal"><span>+</span></div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="loanModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Add Loan</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="" method="POST" action="">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="name2">Employee</label>
+                {{loan_form.employee|add_class:"form-control"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Loan Amount</label>
+                {{loan_form.loan_amount|add_class:"form-control"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Return Amount</label>
+                {{loan_form.amount_paid|add_class:"form-control"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Date of Loan</label>
+                {{loan_form.loan_date|add_class:"form-control"|attr:"type:date"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Due date</label>
+                {{loan_form.due_date|add_class:"form-control"|attr:"type:date"}}
+              </div>
+
+              <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                  class="fa fa-check"></i>Submit</button>
+            </form>
+
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loan Details Modal -->
+  <div class="modal fade" id="expenseDetailslModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Employee Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+<div style="background-color: whitesmoke;padding:10px;border-radius:10px;margin-top:20px;">
+
+            <div class="expenseData">
+              <span style="font-weight: 600;margin-right:5px;">Name </span> <div id="name"></div>
+           </div>
+           <div class="expenseData">
+            <span style="font-weight: 600;margin-right:5px;">Category </span> <div id="category"></div>
+         </div>
+         <div class="expenseData">
+          <span style="font-weight: 600;margin-right:5px;">Details </span> <div id="details"></div>
+       </div>
+       <div class="expenseData">
+        <span style="font-weight: 600;margin-right:5px;">Cost </span> <div id="cost"></div>
+     </div>
+</div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of Loan details modal -->
+
+
+</div>
+
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+
+<script>
+  $(function ($) {
+    $('#example').DataTable();
+  });
+</script>
+
+{% endblock %}

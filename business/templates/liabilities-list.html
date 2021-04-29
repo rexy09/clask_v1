@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+{% load humanize %}
+
+{% block title %}Liabilities{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:accounts-home' id=business.id %}">Accounts</a></li>
+<li>Liabilities</li>
+{% endblock%}
+
+{% block content %}
+
+<style type="text/css">
+  .fab {
+    background: #4B9848;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    text-align: center;
+    color: #FFF;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5), 3px 3px 3px rgba(0, 0, 0, 0.25);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.6667em;
+    display: inline-block;
+    cursor: default;
+    padding-top: 8px;
+  }
+
+  .fab span {
+    vertical-align: text-bottom;
+    font-size: 45px;
+  }
+  .liabilitiesData{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+</style>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel-body bg-white">
+        <div class="table-responsive">
+          <table class="table table-bordered" width="100%" cellspacing="0" id="example">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Cost</th>
+                <!-- <th>Action</th> -->
+    
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Cost</th>
+                <!-- <th>Action</th> -->
+              </tr>
+            </tfoot>
+            <tbody id="myTable">
+              <tr>
+                <td></td>
+                <td>Interest</td>
+                <td>{{interest_total|floatformat:2|intcomma}}</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>Tax</td>
+                <td>{{tax_total|floatformat:2|intcomma}}</td>
+              </tr>
+              {% for liability in liabilities %}
+    
+              <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{liability.name}}</td>
+                <td>{{liability.cost|floatformat:2}}</td>
+<!--                 <td>
+                  <a href="#" class="hvr-icon-push hvr-shrink" data-micron-timing="linear" data-micron="bounce"
+                    data-micron-duration=".">
+                    <button class="btn btn-success btn-sm" data-micron-timing="linear" data-micron="bounce"
+                      data-micron-duration="." data-toggle="modal" data-target="#liabilitiesDetailslModal"
+                      data-name="{{liability.name}}" 
+                      data-cost="{{liability.cost}}"> 
+                      <i class="fa fa-eye hvr-icon"></i>
+                      view
+                    </button>
+                  </a>
+    
+                  <a href="{% url 'business:liabilities-update' pk=liability.id id=business.id %}"
+                    class="hvr-icon-push hvr-shrink" data-micron-timing="linear" data-micron="bounce"
+                    data-micron-duration=".">
+                    <button class="btn btn-info btn-sm" data-micron-timing="linear" data-micron="bounce"
+                      data-micron-duration=".">
+                      <i class="fa fa-edit hvr-icon"></i>
+                      edit
+                    </button>
+                  </a>
+                </td> -->
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fab" id="masterfab" data-toggle="modal" data-target="#FixedAssetModal"><span>+</span></div>
+  <!-- Modal -->
+  <div class="modal fade" id="FixedAssetModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Add Liability</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="" method="POST" action="">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="name2">Name</label>
+                <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                {{liability_form.name|add_class:"form-control"|attr:"placeholder:Liability Name"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Cost</label>
+                <!-- <span class="fa fa-money form-left-icon"></span> -->
+                {{liability_form.cost|add_class:"form-control"}}
+              </div>
+              <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                  class="fa fa-check"></i>Submit</button>
+
+            </form>
+   
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Liabilities Details Modal -->
+  <div class="modal fade" id="liabilitiesDetailslModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Employee Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div style="background-color: whitesmoke;padding:10px;border-radius:10px;">
+              <div class="row p-3">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                  <span style="font-size: 20px;font-weight:700;"></span>
+                  <div class="liabilitiesData">
+                   <span style="font-weight: 600;margin-right:5px;">Liability Name </span> <div id="name"></div>
+                  </div>
+                   <div class="liabilitiesData">
+                    <span style="font-weight: 600;margin-right:5px;">Cost </span> <div id="cost"></div>
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of Liabilities details modal -->
+</div>
+
+<script>
+  $('#liabilitiesDetailslModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var name = button.data('name') // Extract info from data-* attributes
+    var quantity = button.data('quantity') // Extract info from data-* attributes
+    var type = button.data('type') // Extract info from data-* attributes
+    var location = button.data('location') // Extract info from data-* attributes
+    var date = button.data('date') // Extract info from data-* attributes
+    var cost = button.data('cost') // Extract info from data-* attributes
+    var maintanance_schedule = button.data('maintanance_schedule') // Extract info from data-* attributes
+    var maintanance_period = button.data('maintanance_period') // Extract info from data-* attributes
+    var usage_period = button.data('usage_period') // Extract info from data-* attributes
+    var usage_interval = button.data('usage_interval') // Extract info from data-* attributes
+    var maintanance_fee = button.data('maintanance_fee') // Extract info from data-* attributes  
+    console.log(cost)
+    console.log(name)
+    console.log(type)
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+    modal.find('.modal-title').text('Liabilities Details')
+    modal.find('.modal-body #name').text(name)
+    modal.find('.modal-body #type').text(type)
+    modal.find('.modal-body #cost').text(cost)
+  })
+</script>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+
+<script>
+  $(function ($) {
+    $('#example').DataTable();
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Add Sale
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:sales_branch' id=business.id %}">Business Branch</a></li>
+<li>Add Sale</li>
+{% endblock%}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-warning" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Warning!</strong> {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Sale Info.</h5>
+                    </div>
+                </div>
+                <div class="panel-body p-20">
+                    <form class="col-md-10 col-md-offset-1" method="POST" action=".">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username2">Select Customer</label>
+                            {{form.customer|add_class:"form-control"|attr:"placeholder:Customer"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="name2">Select Prodcut</label>
+                            {{form.inventory|add_class:"form-control"}}
+                        </div>
+                        <div class="form-group">
+
+                            <label for="username2">Quantity</label>
+                            {{form.quantity|add_class:"form-control"|attr:"placeholder:Quantity"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Price</label>
+                            {{form.price|add_class:"form-control"|attr:"placeholder:Price"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Total</label>
+                            {{form.total|add_class:"form-control"|attr:"placeholder:Total"|attr:"readonly"}}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="city">Discount Unit</label>
+                                    {{form.discount_unit|add_class:"form-control"|attr:"placeholder:Discount Unit"}}
+                                </div>
+                            </div>
+                            <!-- /.col-md-6 -->
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="state">Discount</label>
+                                    {{form.discount|add_class:"form-control"|attr:"placeholder:Discount"}}
+                                </div>
+                            </div>
+                            <!-- /.col-md-6 -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="city">Tax Unit</label>
+                                    {{form.tax_unit|add_class:"form-control"|attr:"placeholder:Tax Unit"}}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="state">Tax</label>
+                                    {{form.tax|add_class:"form-control"|attr:"placeholder:Tax"}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Customer Paid</label>
+                            {{form.amount_paid|add_class:"form-control"|attr:"placeholder:Customer Paid"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Profit</label>
+                            {{form.profit|add_class:"form-control"|attr:"placeholder:Profit"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Order No.</label>
+                            {{form.order_no|add_class:"form-control"|attr:"placeholder:Order No."}}
+                            <span class="text-danger">{{form.order_no.errors}}</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Status</label>
+                            {{form.status|add_class:"form-control"|attr:"placeholder:Status"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Notes</label>
+                            {{form.note|add_class:"form-control"|attr:"placeholder:Notes"|attr:"rows:3"}}
+                        </div>
+                        <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                                class="fa fa-check"></i>Submit</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+
+</div>
+
+<script>
+    var obj = {};
+    var profit;
+    var total;
+    var tax=0;
+    var disc=0;
+
+    $("#id_inventory").change(function () {
+        $.ajax({
+            url: "{% url 'business:get_inventory' %}",
+            dataType: "json",
+            data: {
+                inventory: $("#id_inventory").val(),
+            },
+            success: function (data) {
+                var $data = JSON.parse(data);
+                obj = $data;
+                $('#id_price').val($data['sell_price']);
+
+                // Total calculation
+                total = $("#id_quantity").val() * obj['sell_price'];
+
+                $('#id_total').val(total);
+        
+                $('#id_amount_paid').val((total+ tax) - disc);
+        
+                var cost = $("#id_quantity").val() * obj['product_cost'];
+        
+                profit = total - cost;
+        
+                $('#id_profit').val(profit);
+            }
+        });
+    });
+
+    $("#id_inventory").ready(function () {
+        $.ajax({
+            url: "{% url 'business:get_inventory' %}",
+            dataType: "json",
+            data: {
+                inventory: $("#id_inventory").val(),
+            },
+            success: function (data) {
+                var $data = JSON.parse(data);
+                obj = $data;
+                $('#id_price').val($data['sell_price']);
+            }
+        });
+    });
+
+    $("#id_quantity").keyup(function () {
+
+        total = $("#id_quantity").val() * obj['sell_price'];
+
+        $('#id_total').val(total);
+
+        $('#id_amount_paid').val((total+ tax) - disc);
+
+        var cost = $("#id_quantity").val() * obj['product_cost'];
+
+        profit = total - cost;
+
+        $('#id_profit').val(profit);
+    });
+
+    // Discount fuction
+    $("#id_discount").keyup(function () {
+
+        var unit = $('#id_discount_unit').val();
+
+        if (unit == 'flat') {
+            if ($("#id_discount").val() != ''){
+                disc = $("#id_discount").val();
+            
+                $('#id_amount_paid').val((total+ tax) - disc);
+
+                var p = profit - disc;
+                $('#id_profit').val(p);
+
+            }else{
+                $('#id_amount_paid').val($('#id_total').val());
+                $('#id_profit').val(profit);
+            }
+           
+
+        } else if (unit == '%') {
+            if ($("#id_discount").val() != ''){
+
+                disc = ($("#id_discount").val()/100) * total;
+            
+                $('#id_amount_paid').val((total+ tax) - disc);
+
+                var p = profit - disc;
+                $('#id_profit').val(p);
+
+
+            }else{
+                $('#id_amount_paid').val($('#id_total').val());
+                $('#id_profit').val(profit);
+            }
+
+        }
+
+    });
+
+    // Tax fuction
+    $("#id_tax").keyup(function () {
+
+        var unit = $('#id_tax_unit').val();
+
+        console.log(unit);
+        if (unit == '%') {
+            if ($("#id_tax").val() != ''){
+
+                tax = ($("#id_tax").val()/100) * total;
+            
+                $('#id_amount_paid').val((total + tax) - disc);
+
+            }else{
+                null
+            }
+
+        }
+
+    });
+</script>
+
+
+<!--   <script type="text/javascript">
+    $(document).ready(function () {
+      $('select').selectize({
+        sortField: 'text'
+      });
+
+    });
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.0/js/standalone/selectize.min.js"
+    integrity="sha512-WIqmTz2P0Ei2a6Fu5gEe7rXo0cyvpLHGKcOWLkqmZSREr8AjblAQSFYt+T/dgYyPz4+alSHpLS0XkezN4VpsLg=="
+    crossorigin="anonymous"></script> -->
+
+{% endblock %}

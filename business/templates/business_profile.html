@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{business.name}}
+{% endblock %}
+
+{% block breadcrumb %}
+<li>{{business.name}}</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="{% url 'business:inventory' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Inventory</span>
+                <span class="bg-icon"><i class="fa fa-cubes" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-success" href="{% url 'business:customer_list' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Customers</span>
+                <span class="bg-icon"><i class="fa fa-users" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-primary" href="{% url 'business:sales_branch' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Sales</span>
+                <span class="bg-icon"><i class="fa fa-bar-chart" style="padding: 12px;"></i></span>
+            </a>
+
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-warning" href="{% url 'business:expenses' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Expenses</span>
+                <span class="bg-icon"><i class="fa fa-calculator" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+    </div>
+    <!-- /.row -->
+    <div class="row" style="margin-top: 2vh;">
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="{% url 'business:procurement_management' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Procurement Management Unit</span>
+                <span class="bg-icon"><i class="fa fa-tasks" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-success" href="{% url 'business:fixed-asset-home' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Fixed Assets Management</span>
+                <span class="bg-icon"><i class="fa fa-home" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-primary" href="{% url 'business:reports' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Reports</span>
+                <span class="bg-icon"><i class="fa fa-file-o" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-warning" href="{% url 'business:financial_statements' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Financial Statements</span>
+                <span class="bg-icon"><i class="fa fa-money" style="padding: 12px;"></i></span>
+            </a>
+
+        </div>
+
+    </div>
+    <div class="row" style="margin-top: 2vh;">
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="{% url 'business:accounts-home' id=business.id %}">
+                <span class="number counter"></span>
+                <span class="name">Accounts</span>
+                <span class="bg-icon"><i class="fa fa-money" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

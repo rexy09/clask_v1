@@ -1,0 +1,246 @@
+{% load humanize %}
+{% load static %}
+{% load django_template_maths %}
+{% load custom_template_tags %}
+
+<head>
+    <title>Payroll Report</title>
+    <style>
+        @page {
+            size: A4;
+            /* Change from the default size of A4 */
+            margin: 0.5cm;
+            /* Set margin on each page */
+            background-color: #f5f4f3;
+
+        }
+
+        header {
+            height: auto;
+            width: 100%;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        body {
+            background-color: #ffffff;
+            font-size: 12px;
+            font-family: 'Lucida Sans';
+            background-image: url("{% static 'img/potraits.png' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+            border-collapse: collapse;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: whitesmoke;
+        }
+
+        table th {
+            background-color: #7ebb45;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th {
+            text-align: center;
+            padding: 5px;
+            font-size: 12px;
+        }
+
+        td {
+            text-align: center;
+            padding: 5px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="{% static 'img/report-heading.png' %}" alt="">
+    </header>
+        <br><br>
+        <h1 style="color: #28a745;">Trial Balance</h1>
+        <br>
+
+					<div class="table-responsive">
+						<table id="example" class="display table table-striped table-bordered" cellspacing="0"
+							width="100%">
+							<thead>
+								<tr>
+									<th>Description</th>
+									<th>Debit</th>
+									<th>Credit</th>
+								</tr>
+							</thead>
+						
+							<tbody>
+								<tr>
+									<td>Assets</td>
+									<td>
+										0
+									</td>
+									<td>
+										{{assets|intcomma}}
+									</td>
+									
+								</tr>
+								<tr>
+									<td>Liabilities</td>
+									<td>
+										0
+									</td>									
+									<td>
+										{{liabilities|intcomma}}
+									</td>
+								</tr>
+								<tr>
+									<td>Salaries</td>
+									<td>
+										{{salaries|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+								<tr>
+									<td>Taxes</td>
+									<td>
+										{{taxes|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>		
+
+								<tr>
+									<td>Interests</td>
+									<td>
+										{{interests|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+								<tr>
+									<td>Paye</td>
+									<td>
+										{{paye|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td>Sdl</td>
+									<td>
+										{{sdl|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td>Expenses</td>
+									<td>
+										{{expenses|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td>Cogs</td>
+									<td>
+										{{cogs|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td>Sales</td>
+									<td>
+										0
+									</td>									
+									<td>
+										{{sales|intcomma}}
+									</td>
+								</tr>																					
+
+								<tr>
+									<td>Heslb</td>
+									<td>
+										{{heslb|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td>Nssf</td>
+									<td>
+										{{nssf|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td>Wcf</td>
+									<td>
+										{{wcf|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+								<tr>
+									<th>Total</th>
+									<th>
+										{{debit|intcomma}}
+									</th>
+									<th>
+										{{credit|intcomma}}
+									</th>
+									
+								</tr>																
+							</tbody>
+						</table>
+					</div>
+					
+
+</body>

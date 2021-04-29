@@ -1,0 +1,52 @@
+{% load humanize %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clask</title>
+</head>
+<!-- Custom CSS -->
+<style>
+    span {
+        font-weight: 300;
+    }
+   
+</style>
+
+<body style="color:rgb(0, 0, 0)">
+    <div>
+        <!--Banner Image Section-->
+
+        <!-- <div>
+                <img src="{% static 'img/report-heading.png' %}" class="img-fluid" alt="banner">
+            </div>
+             -->
+
+        <div class="row mt-3">
+            <h3>Purchase Order</h3>
+        </div>
+        <div class="row mt-3">
+            <div class="d-flex flex-column">
+                <p>PO Number : <strong>{{purchase_order.po_no}}</strong></p>
+                <p>Supplier : <strong>{{purchase_order.supplier}}</strong></p>
+                <p>Delivery Center : <strong>{{purchase_order.delivery}}</strong></p>
+                <p>Prepared By : <strong>{{purchase_order.employee.user_employee.full_name}}</strong><br><strong>{{purchase_order.employee.user_employee.position}}</strong></p>
+                <p>Date : <strong>{{purchase_order.created_at.date}}</strong></p>
+            </div>
+        </div>
+        <div style="background-color: whitesmoke;padding:20px;">
+            <p class="text-center">Click the link below to view.</p>
+            <a href="http://{{domain}}{% url 'business:view_purchase_order' id=purchase_order.id %}">Purchase Order No. {{purchase_order.po_no}}</a>
+        </div>
+        <br>
+        <p style="font-weight: 700;color: green;">
+            CLASK TANZANIA LTD
+        </p>
+    </div>
+</body>
+
+</html>

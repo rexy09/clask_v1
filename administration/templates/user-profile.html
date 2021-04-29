@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+User Profile
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+
+    <div class="row">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{message.tags}}">
+            {{message}}
+          </div>
+        {% endfor %}
+      {% endif %}        
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-success" href="{% url 'administration:password-change' %}">
+                <span class="number counter"></span>
+                <span class="name">Change password</span>
+                <span class="bg-icon"><i class="fa fa-lock" style="padding: 12px;"></i></span>
+            </a>
+            <!-- /.dashboard-stat -->
+        </div>
+    </div>
+
+
+</div>
+{% endblock %}

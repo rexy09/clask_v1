@@ -1,0 +1,111 @@
+{% load humanize %}
+{% load notifications_tags %}
+{% notifications_unread as unread_count %}
+{% load static %}
+
+<nav class="navbar top-navbar bg-white box-shadow">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="navbar-header no-padding">
+                <a class="navbar-brand" href="{% url 'index' %}">
+                    <span class="">Clask Taznania LTD</span>
+                </a>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-ellipsis-v"></i>
+                </button>
+                <button type="button" class="navbar-toggle mobile-nav-toggle">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                <ul class="nav navbar-nav" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+                    <li class="hidden-sm hidden-xs"><a href="#" class="user-info-handle"><i class="fa fa-dashboard"></i></a>
+                    </li>
+                    <li class="hidden-sm hidden-xs"><a href="#" class="full-screen-handle"><i
+                                class="fa fa-arrows-alt"></i></a></li>
+                    <li class="hidden-xs hidden-xs">
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+                    <!-- /.dropdown -->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria-expanded="false"><i class="fa fa-bell"></i>
+                            {% if unread_count %}<span class="badge badge-danger">{{ unread_count }}</span>{% endif %}
+                        </a>
+                        <ul class="dropdown-menu" style="width: 350px; overflow-y: auto; max-height: 350px;">
+
+                            <li class="text-center">You have {{ unread_count }} notifications</li>
+
+                            {% for notifications in user.notifications.unread %}
+                            <li>
+                                <a href="{% url 'administration:mark_notification_read' notification=notifications.pk %}"
+                                    class="item">
+                                    <div style="white-space: normal; width: 100%;">
+                                    {% if notifications.level  == "success" %}
+                                    <i class="check circle olive icon"></i>
+                                    {% elif notifications.level == "info" %}
+                                    <i class="fa fa-info-circle text-info fa-lg"></i>
+                                    {% elif notifications.level == "warning" %}
+                                    <i class="fa fa-warning text-danger fa-lg"></i>
+                                    {% endif %}
+                                    {{ notifications.verb }} <small class="text-muted">{{ notifications.timestamp|naturaltime }}</small></div>
+                                     
+                                    {% if notifications.description %}
+                                    <div class="" style="font-size: 12px;">
+                                        <q>{{ notifications.description }}</q>
+                                    </div>
+                                    {% endif %}
+                                </a>
+                            </li>
+                            {% empty %}
+                            <li class="text-center p-20">No Notifications.</li>
+                            {% endfor %}
+
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria-expanded="false">{{user.username}} <span class="caret"></span></a>
+                        <ul class="dropdown-menu profile-dropdown">
+                            <li class="profile-menu bg-gray">
+                                <div class="">                                    
+                                    {% if user.user_employee.image.url != '' %}
+                                    <img src="{{ user.user_employee.image.url }}" alt="{{user.username}}"
+                                        class="img-circle profile-img" style="object-fit: cover;" width="50" height="50">
+                                    {% else %}
+                                    <img src="http://placehold.it/60/c2c2c2?text=User" alt="User"
+                                        class="img-circle profile-img">                                       
+                                    {% endif %}                                
+                                    <div class="profile-name">
+                                        
+                                        {% if user.user_employee != None %}
+                                        <h6>{{user.user_employee.full_name}}</h6>
+                                        {% else %}
+                                        <h6>No Name</h6> 
+                                        {% endif %}
+                                            
+                                        <a href="{% url 'administration:user-profile' %}">View Profile</a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="{% url 'administration:logout' %}" class="color-danger text-center"><i class="fa fa-sign-out"></i>
+                                    Logout</a></li>
+                        </ul>
+                    </li>
+                    <!-- /.dropdown -->
+                    </li>
+                </ul>
+                <!-- /.nav navbar-nav navbar-right -->
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</nav>

@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+{% load humanize %}
+
+{% load custom_template_tags %}
+
+{% block title %}Interest{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:expenses' id=business.id %}">Expenses</a></li>
+<li>Interest</li>
+{% endblock%}
+
+{% block content %}
+
+<style type="text/css">
+  .fab {
+    background: #4B9848;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    text-align: center;
+    color: #FFF;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5), 3px 3px 3px rgba(0, 0, 0, 0.25);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.6667em;
+    display: inline-block;
+    cursor: default;
+    padding-top: 8px;
+  }
+
+  .fab span {
+    vertical-align: text-bottom;
+    font-size: 45px;
+  }
+  .liabilitiesData{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+</style>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel-body bg-white">
+        <div class="table-responsive">
+          <table class="table table-bordered" width="100%" cellspacing="0" id="example">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Lender</th>
+                <th>Date</th>
+                <th>Loan</th>
+                <th>Interest rate</th>                
+                <th>Repayment</th>                
+                <th>Remaining debt</th>                
+                <th>Action</th>
+    
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <th>#</th>
+                <th>Lender</th>
+                <th>Date</th>
+                <th>Loan</th>
+                <th>Interest rate</th>                
+                <th>Repayment</th>                
+                <th>Remaining debt</th>                
+                <th>Action</th>
+              </tr>
+            </tfoot>
+            {% if interests %}
+            <tbody id="myTable">
+              {% for interest in interests %}
+    
+              <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{interest.lender}}</td>
+                <td>{{interest.loan_date}}</td>
+                <td>{{interest.principal|intcomma}}</td>
+                <td>{{interest.rate}} %</td>
+                <td>{{interest.repayment|intcomma}}</td>
+                <td>{{interest.remaining|intcomma}}</td>
+
+                <td>
+                  <a href="{% url 'business:interest-payment' id=business.id pk=interest.id %}" class="hvr-icon-push hvr-shrink" data-micron-timing="linear" data-micron="bounce"
+                    data-micron-duration=".">
+                    <button class="btn btn-success btn-sm" data-micron-timing="linear" data-micron="bounce"
+                      data-micron-duration="." data-toggle="modal" data-target=""
+                      data-id="{{interest.id}}" >
+                      <i class="fa fa-money hvr-icon"></i>
+                      Pay
+                    </button>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+    
+              {% else %}
+              <tr>
+                <td colspan="8" class="text-center">0 interests</td>
+              </tr>
+              {% endif %}
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fab" id="masterfab" data-toggle="modal" data-target="#InterestModal"><span>+</span></div>
+  <!-- Modal -->
+  <div class="modal fade" id="InterestModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Add Interest</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="" method="POST" action="">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="name2">Lender</label>
+                <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                {{form.lender|add_class:"form-control"|attr:"placeholder:Name"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Loan Amount</label>
+                <!-- <span class="fa fa-money form-left-icon"></span> -->
+                {{form.principal|add_class:"form-control"|attr:"placeholder:Amount"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Interest Rate</label>
+                <!-- <span class="fa fa-money form-left-icon"></span> -->
+                {{form.rate|add_class:"form-control"|attr:"placeholder:Rate"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Time period in months</label>
+                <!-- <span class="fa fa-money form-left-icon"></span> -->
+                {{form.time|add_class:"form-control"|attr:"placeholder:Months"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Date of loan</label>
+                <!-- <span class="fa fa-money form-left-icon"></span> -->
+                {{form.loan_date|add_class:"form-control"|attr:"type:date"}}
+              </div>                                          
+              <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                  class="fa fa-check"></i>Submit</button>
+
+            </form>
+   
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Payment Modal -->
+  <div class="modal fade" id="PaymentModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Loan Payment</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form class="" method="POST" action="">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="name2">Payment amount</label>
+                <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                {{payment_form.payment|add_class:"form-control"|attr:"placeholder:Amount"}}
+              </div>                                         
+              <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                  class="fa fa-check"></i>Submit</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of Payment modal -->
+</div>
+
+<script>
+  $('#PaymentModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var interest_id = button.data('id') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+    // modal.find('.modal-title').text('Liabilities Details')
+    console.log(interest_id)
+
+    // modal.find('.modal-body #name').text(name)
+    // modal.find('.modal-body #type').text(type)
+    // modal.find('.modal-body #cost').text(cost)
+  })
+</script>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+
+<script>
+  $(function ($) {
+    $('#example').DataTable();
+  });
+</script>
+
+{% endblock %}

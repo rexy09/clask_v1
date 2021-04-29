@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %} Fixed Assets{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<!-- <li><a href="{% url 'business:fixed-asset-home' id=business.id %}">Fixed Assets Management</a></li> -->
+<li>Fixed Assets</li>
+{% endblock%}
+
+{% block content %}
+
+<style type="text/css">
+  .fab {
+    background: #4B9848;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    text-align: center;
+    color: #FFF;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5), 3px 3px 3px rgba(0, 0, 0, 0.25);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.6667em;
+    display: inline-block;
+    cursor: default;
+    padding-top: 8px;
+  }
+
+  .fab span {
+    vertical-align: text-bottom;
+    font-size: 45px;
+  }
+  .fixedassetData{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+</style>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<div class="container-fluid">
+
+  <div class="card-body bg-white p-20">
+    <div class="table-responsive">
+      <table id="example" class="table table-bordered" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Asset type</th>
+            <th>Branch</th>
+            <th>Quantity</th>
+            <th>Date bought</th>
+            <th>Buying price</th>
+            <th>Depreciation value/ Amortizaion value</th>
+            <th>Depreciation / Amortizaion </th>
+            <th>Value</th>
+            <th>Action</th>
+
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Asset type</th>
+            <th>Branch</th>
+            <th>Quantity</th>
+            <th>Date bought</th>
+            <th>Buying price</th>
+            <th>Depreciation value/ Amortizaion value</th>
+            <th>Depreciation % / Amortizaion %</th>
+            <th>Value</th>
+            <th>Action</th>
+          </tr>
+        </tfoot>
+        {% if assets %}
+        <tbody id="myTable">
+          {% for asset in assets %}
+
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{asset.name}}</td>
+            <td>{{asset.asset_type}}</td>
+            <td>{{asset.location}}</td>
+            <td>{{asset.quantity}}</td>
+            <td>{{asset.date_bought}}</td>
+            <td>{{asset.buying_price}}</td>
+            {% if asset.asset_type == 'tangible' %}
+            <td>{{asset.depreciation_value}}</td>
+            <td>{{asset.depreciation_percent}}%</td>
+            {% elif asset.asset_type == 'intangible' %}
+            <td>{{asset.amortization_value}}</td>
+            <td>{{asset.amortization_percent}}%</td>
+            {% endif  %}
+            <td>{{asset.value}}</td>
+            <td>
+              <a href="#" class="hvr-icon-push hvr-shrink" data-micron-timing="linear" data-micron="bounce"
+                data-micron-duration=".">
+                <button class="btn btn-success btn-sm" data-micron-timing="linear" data-micron="bounce"
+                  data-micron-duration="." data-toggle="modal" data-target="#assetDetailslModal"
+                  data-name="{{asset.name}}" data-quantity="{{asset.quantity}}" data-type="{{asset.asset_type}}"
+                  data-location="{{asset.location}}" data-date="{{asset.date_bought}}"
+                  data-cost="{{asset.buying_price}}" data-usage_period="{{asset.usage_period_estimation}}"
+                  data-usage_interval="{{asset.usage_period_intervals}}"
+                  data-maintanance_schedule="{{asset.maintanance_schedule}}"
+                  data-maintanance_period="{{asset.maintanance_schedule_period}}"
+                  data-maintanance_fee="{{asset.maintanance_fee}}"
+                  data-depreciation_value="{{asset.depreciation_value}}"
+                  data-depreciation_percent="{{asset.depreciation_percent}}"
+                  >
+                  <i class="fa fa-eye hvr-icon"></i>
+                  view
+                </button>
+              </a>
+
+              <a href="{% url 'business:fixed-asset-update' pk=asset.id id=business.id %}"
+                class="hvr-icon-push hvr-shrink" data-micron-timing="linear" data-micron="bounce"
+                data-micron-duration=".">
+                <button class="btn btn-info btn-sm" data-micron-timing="linear" data-micron="bounce"
+                  data-micron-duration=".">
+                  <i class="fa fa-edit hvr-icon"></i>
+                  edit
+                </button>
+              </a>
+
+            </td>
+          </tr>
+          {% endfor %}
+
+          {% else %}
+          <tr>
+            <td colspan="10" class="text-center">0 Fixed Assets</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="fab" id="masterfab" data-toggle="modal" data-target="#FixedAssetModal"><span>+</span></div>
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="FixedAssetModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Add Asset</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="" method="POST" action="">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="name2">Name</label>
+                <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                {{fixed_asset_form.name|add_class:"form-control"|attr:"placeholder:Fixed asset name"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Asset type</label>
+                <!-- <span class="fa fa-user form-left-icon"></span> -->
+                {{fixed_asset_form.asset_type|add_class:"form-control"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Branch</label>
+                <!-- <span class="fa fa-building form-left-icon"></span> -->
+                {{fixed_asset_form.location|add_class:"form-control"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Quantity</label>
+                <!-- <span class="fa fa-th form-left-icon"></span> -->
+                {{fixed_asset_form.quantity|add_class:"form-control"|attr:"placeholder:Quantity"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Buying price</label>
+                <!-- <span class="fa fa-money form-left-icon"></span> -->
+                {{fixed_asset_form.buying_price|add_class:"form-control"|attr:"placeholder:Buying price"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Date bought</label>
+                <!-- <span class="fa fa-calendar form-left-icon"></span> -->
+                {{fixed_asset_form.date_bought|add_class:"form-control"|attr:"type:date"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Usage period estimation</label>
+                <!-- <span class="fa fa-calendar form-left-icon"></span> -->
+                {{fixed_asset_form.usage_period_estimation|add_class:"form-control"}}
+                {{fixed_asset_form.usage_period_intervals|add_class:"form-control"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Maintanance schedule</label>
+                <!-- <span class="fa fa-calendar form-left-icon"></span> -->
+                {{fixed_asset_form.maintanance_schedule|add_class:"form-control"}}
+                {{fixed_asset_form.maintanance_schedule_period|add_class:"form-control"}}
+              </div>
+              <div class="form-group">
+                <label for="name2">Maintanance fee</label>
+                <!-- <span class="fa fa-money form-left-icon"></span> -->
+                {{fixed_asset_form.maintanance_fee|add_class:"form-control"}}
+              </div>
+
+              <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                  class="fa fa-check"></i>Submit</button>
+
+            </form>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expense Details Modal -->
+  <div class="modal fade" id="assetDetailslModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Employee Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div style="background-color: whitesmoke;padding:10px;border-radius:10px;">
+              <div class="row p-3">
+
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                  <span style="font-size: 20px;font-weight:700;"></span>
+                  <div class="fixedassetData">
+                   <span style="font-weight: 600;margin-right:5px;">Asset's Name </span> <div id="name"></div>
+                  </div>
+                  <div class="fixedassetData">
+                    <span style="font-weight: 600;margin-right:5px;">Type </span> <div id="type"></div>
+                   </div>
+                   <div class="fixedassetData">
+                    <span style="font-weight: 600;margin-right:5px;">Quality </span> <div id="quality"></div>
+                   </div>
+                   <div class="fixedassetData">
+                    <span style="font-weight: 600;margin-right:5px;">Location </span> <div id="location"></div>
+                   </div>
+                   <div class="fixedassetData">
+                    <span style="font-weight: 600;margin-right:5px;">Date </span> <div id="date"></div>
+                   </div>
+                   <div class="fixedassetData">
+                    <span style="font-weight: 600;margin-right:5px;">Cost </span> <div id="cost"></div>
+                   </div>
+                   <div class="fixedassetData">
+                    <span style="font-weight: 600;margin-right:5px;">Maintanace Schedule </span> <div id="maintanance_schedule"></div>
+                   </div>
+                   <div class="fixedassetData">
+                    <span style="font-weight: 600;margin-right:5px;">Maintanance Period </span> <div id="maintanance_period"></div>
+                   </div>
+                   <div class="fixedassetData">
+                    <span style="font-weight: 600;margin-right:5px;">Usage Period </span> <div id="usage_period"></div>
+                   </div>
+                   <div class="fixedassetData">
+                    <span style="font-weight: 600;margin-right:5px;">Usage Interval </span> <div id="usage_interval"></div>
+                   </div>
+                   <div class="fixedassetData">
+                    <span style="font-weight: 600;margin-right:5px;">Maintanance Fee </span> <div id="maintanance_fee"></div>
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- End of Expense details modal -->
+</div>
+<script>
+  $('#assetDetailslModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var name = button.data('name') // Extract info from data-* attributes
+    var quantity = button.data('quantity') // Extract info from data-* attributes
+    var type = button.data('type') // Extract info from data-* attributes
+    var location = button.data('location') // Extract info from data-* attributes
+    var date = button.data('date') // Extract info from data-* attributes
+    var cost = button.data('cost') // Extract info from data-* attributes
+    var maintanance_schedule = button.data('maintanance_schedule') // Extract info from data-* attributes
+    var maintanance_period = button.data('maintanance_period') // Extract info from data-* attributes
+    var usage_period = button.data('usage_period') // Extract info from data-* attributes
+    var usage_interval = button.data('usage_interval') // Extract info from data-* attributes
+    var maintanance_fee = button.data('maintanance_fee') // Extract info from data-* attributes 
+    var depreciation_value = button.data('depreciation_value') // Extract info from data-* attributes 
+    var depreciation_percent = button.data('depreciation_percent') // Extract info from data-* attributes          
+    console.log(cost)
+    console.log(name)
+    console.log(type)
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+    modal.find('.modal-title').text('Fixed Asset Details')
+    modal.find('.modal-body #name').text(name)
+    modal.find('.modal-body #type').text(type)
+    modal.find('.modal-body #quantity').text(quantity)
+    modal.find('.modal-body #location').text(location)
+    modal.find('.modal-body #date').text(date)    
+    modal.find('.modal-body #cost').text(cost)
+    modal.find('.modal-body #maintanance_schedule').text(maintanance_schedule)
+    modal.find('.modal-body #maintanance_period').text(maintanance_period)
+    modal.find('.modal-body #usage_period').text(usage_period)
+    modal.find('.modal-body #usage_interval').text(usage_interval)
+    modal.find('.modal-body #maintanace_fee').text(maintanance_fee)
+  })
+</script>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+
+<script>
+  $(function ($) {
+    $('#example').DataTable();
+  });
+</script>
+{% endblock %}

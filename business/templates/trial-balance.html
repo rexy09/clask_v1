@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% load django_template_maths %}
+
+{% block title %}
+Trial Balance 
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:financial_statements' id=business.id %}">Financial Statement</a></li>
+<li><a href="{% url 'business:trial-balance-time' id=business.id %}">Time Frame</a></li>
+<li>Trial Balance</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+
+			<div class="panel">
+			
+				<div class="panel-heading">
+					<div class="panel-title">
+                        <h3 style="float: left; font-weight: 700 !important; color: #28a745 !important;" class="">Trial Balance</h3>
+                        <a href="{% url 'business:trial-balance-pdf' id=business.id %}?fr={{fr}}&to={{to}}&pdf=1"
+                            class="btn btn-primary" style="float: right; margin: 20px;" target="_blank"><i class="fa fa-print fa-lg"
+                                style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+                        <a href="{% url 'business:trial-balance-excel' id=business.id %}?fr={{fr}}&to={{to}}"
+                            class="btn btn-success" style="float: right; margin: 20px 0px 0px 0px;" target="_blank"><i class="fa fa-file-excel-o fa-lg"
+                                style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>                        
+					</div>
+				</div>
+				<br><br>
+				<div class="panel-body p-20 ">
+
+					<div class="table-responsive">
+						<table id="example" class="display table table-striped table-bordered" cellspacing="0"
+							width="100%">
+							<thead>
+								<tr>
+									<th>Description</th>
+									<th>Debit</th>
+									<th>Credit</th>
+								</tr>
+							</thead>
+						
+							<tbody>
+								<tr>
+									<td>Assets</td>
+									<td>
+										0
+									</td>
+									<td>
+										{{assets|intcomma}}
+									</td>
+									
+								</tr>
+								<tr>
+									<td>Liabilities</td>
+									<td>
+										0
+									</td>
+									<td>
+										{{liabilities|intcomma}}
+									</td>
+								</tr>
+								<tr>
+									<td>Salaries</td>
+									<td>
+										{{salaries|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+								<tr>
+									<td>Taxes</td>
+									<td>
+										{{taxes|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>		
+
+								<tr>
+									<td>Interests</td>
+									<td>
+										{{interests|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+								<tr>
+									<td>Paye</td>
+									<td>
+										{{paye|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td>Sdl</td>
+									<td>
+										{{sdl|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td>Expenses</td>
+									<td>
+										{{expenses|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td>Cogs</td>
+									<td>
+										{{cogs|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td>Sales</td>
+									<td>
+										0
+									</td>									
+									<td>
+										{{sales|intcomma}}
+									</td>
+								</tr>																					
+
+								<tr>
+									<td>Heslb</td>
+									<td>
+										{{heslb|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td>Nssf</td>
+									<td>
+										{{nssf|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td>Wcf</td>
+									<td>
+										{{wcf|intcomma}}
+									</td>
+									<td>
+										0
+									</td>
+									
+								</tr>
+								<tr>
+									<th>Total</th>
+									<th>
+										{{debit|intcomma}}
+									</th>
+									<th>
+										{{credit|intcomma}}
+									</th>
+									
+								</tr>																
+							</tbody>
+						</table>
+					</div>
+					
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+<script>
+	$(function () {
+		$('.counter').counterUp();
+	});
+</script>
+{% endblock %}

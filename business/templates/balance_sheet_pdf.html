@@ -1,0 +1,100 @@
+{% load humanize %}
+{% load static %}
+
+<head>
+    <style>
+        @page {
+            size: A4;
+            /* Change from the default size of A4 */
+            margin: 0.5cm;
+            /* Set margin on each page */
+            background-color: #f5f4f3;
+
+        }
+
+        header {
+            height: auto;
+            width: 100%;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        body {
+            background-color: #ffffff;
+            font-size: 12px;
+            font-family: 'Lucida Sans';
+            background-image: url("{% static 'img/potraits.png' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+            border-collapse: collapse;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: whitesmoke;
+        }
+
+        table th {
+            background-color: #7ebb45;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th {
+            text-align: center;
+            padding: 5px;
+            font-size: 12px;
+        }
+
+        td {
+            text-align: center;
+            padding: 5px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <img src="{% static 'img/report-heading.png' %}" alt="">
+    </header>
+        <br><br>
+        <h1 style="color: #28a745;">Balance Sheet</h1>
+        <br>
+
+                    <table id="example" class="display table table-striped" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Assets</th>
+                                <th>Liabilities</th>
+                                <th>Equity</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td style="font-weight: 700;">{{assets}}</td>
+                                <td style="font-weight: 700;">{{liabilities}}</td>
+                                <td style="font-weight: 700;">{{equity}}</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+</body>

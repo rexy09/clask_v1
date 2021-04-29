@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+Branch List
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'administration:administrator' %}">Administrator</a></li>
+<li>Branch List</li>
+{% endblock%}
+
+{% block content %}
+
+<style type="text/css">
+  .fab {
+    background: #4B9848;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    text-align: center;
+    color: #FFF;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5), 3px 3px 3px rgba(0, 0, 0, 0.25);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.6667em;
+    display: inline-block;
+    cursor: default;
+    padding-top: 8px;
+  }
+
+  .fab span {
+    vertical-align: text-bottom;
+    font-size: 45px;
+  }
+</style>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <h5>Branch List</h5>
+          </div>
+        </div>
+        <div class="panel-body p-20 table-responsive">
+          <div class="card-body bg-white">
+            <div class="table-responsive">
+              <table class="table table-bordered" width="100%" cellspacing="0" id="example">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Business</th>
+                    <th>Action</th>
+
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Business</th>
+                    <th>Action</th>
+                  </tr>
+                </tfoot>
+                {% if branches %}
+                <tbody id="myTable">
+                  {% for branch in branches %}
+
+                  <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{branch.location}}</td>
+                    <td>{{branch.business}}</td>
+                    <td>
+                      <a href="#" class="hvr-icon-push hvr-shrink" data-micron-timing="linear" data-micron="bounce"
+                        data-micron-duration=".">
+                        <button class="btn btn-success btn-sm" data-micron-timing="linear" data-micron="bounce"
+                          data-micron-duration="." data-toggle="modal" data-target="#BranchDetailslModal"
+                          data-name="{{branch.location}}">
+                          <i class="fa fa-eye hvr-icon"></i>
+                          view
+                        </button>
+                      </a>
+
+                      <a href="{% url 'administration:branch-edit' id=branch.id %}" class="hvr-icon-push hvr-shrink"
+                        data-micron-timing="linear" data-micron="bounce" data-micron-duration=".">
+                        <button class="btn btn-info btn-sm" data-micron-timing="linear" data-micron="bounce"
+                          data-micron-duration=".">
+                          <i class="fa fa-edit hvr-icon"></i>
+                          edit
+                        </button>
+                      </a>
+
+                    </td>
+                  </tr>
+                  {% endfor %}
+
+                  {% else %}
+                  <tr>
+                    <td colspan="4" class="text-center">0 Branchs</td>
+                  </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+
+
+      <div class="fab" id="masterfab" data-toggle="modal" data-target="#BranchRegistrationModal"><span>+</span></div>
+
+
+      <!-- Modal -->
+      <div class="modal fade" id="BranchRegistrationModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Add Branch</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="container-fluid">
+                <form class="" method="POST" action="">
+                  {% csrf_token %}
+
+                  <div class="form-group ">
+                    <label for="name2">Business</label>
+                    <!-- <span class="fa fa-globe form-left-icon"></span> -->
+                    {{br_form.business|add_class:"form-control"}}
+                  </div>
+
+                  <div class="form-group">
+                    <label for="name2">Branch</label>
+                    <!-- <span class="fa fa-map-marker  form-left-icon"></span> -->
+                    {{br_form.location|add_class:"form-control"|attr:"placeholder:Branch name"}}
+                  </div>
+
+
+                  <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+                      class="fa fa-check"></i>Submit</button>
+
+                </form>
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Branch Details Modal -->
+      <div class="modal fade" id="BranchDetailslModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Branch Details</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="container-fluid">
+                <div><strong>Name:</strong> <span id="name"></span></div>
+                <div id="type"></div>
+                <div id="cost"></div>
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End of Branch details modal -->
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  $('#BranchDetailslModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var name = button.data('name') // Extract info from data-* attributes
+    console.log(cost)
+    console.log(name)
+    console.log(type)
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+    modal.find('.modal-title').text('Branch Details')
+    modal.find('.modal-body #name').text(name)
+    // modal.find('.modal-body #type').text(type)
+    // modal.find('.modal-body #cost').text(cost)
+  })
+</script>
+
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+
+<script>
+  $(function ($) {
+    $('#example').DataTable();
+  });
+</script>
+
+{% endblock %}

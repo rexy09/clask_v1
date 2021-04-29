@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}User Registrations{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'administration:administrator' %}">Administrator</a></li>
+<li><a href="{% url 'administration:users-list' %}">User List</a></li>
+<li>User Registration</li>
+{% endblock%}
+
+{% block content %}
+
+  <div class="container-fluid">
+
+    <div class="row">   
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Registration</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+        
+
+                <form class="" method="POST" action="">
+                        {% csrf_token %}
+
+                <div class="form-group left-icon">
+                    <label for="name2">Username</label>
+                    <span class="fa fa-globe form-left-icon"></span>               
+                    {{form.username|add_class:"form-control"}}
+                </div>
+
+                <div class="form-group left-icon">
+                    <label for="name2">Password</label>
+                    <span class="fa fa-map-marker  form-left-icon"></span>
+                    {{form.password1|add_class:"form-control"|attr:"placeholder:Enter your password"}}
+                </div>               
+
+                <div class="form-group left-icon">
+                    <label for="name2">Re-type password</label>
+                    <span class="fa fa-map-marker  form-left-icon"></span>
+                    {{form.password2|add_class:"form-control"|attr:"placeholder:Re-enter your password"}}
+                </div>                                                                                                                            
+                <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i class="fa fa-check"></i>Submit</button>
+        
+                </form>
+
+            <div class="col-md-12 mt-15 src-code">
+                <pre class="language-html"><code class="language-html">
+                </code></pre>
+            </div>
+            <div class="col-md-12 mt-15 src-code">
+                <pre class="language-html"><code class="language-html">
+                </code></pre>
+            </div>
+            <!-- /.col-md-12 -->
+        </div>
+    </div>
+</div>
+</div>
+
+</div>
+
+
+       
+{% endblock %}

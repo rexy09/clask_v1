@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %} Expense Edit{% endblock %}
+
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:expense-list' id=business.id %}">Expense List</a></li>
+<li>Expense edit</li>
+{% endblock%}
+
+
+{% block content %}
+
+<div class="container-fluid">
+
+ <div class="row">   
+<div class="col-md-8 col-md-offset-2">
+    <div class="panel">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <h5>Expenses</h5>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <form class="col-md-10 col-md-offset-1" method="POST" action="">
+            	{% csrf_token %}
+                <div class="form-group ">
+            		<label for="name2">Name</label>
+                    <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                    {{exp_form.name|add_class:"form-control"}}
+            	</div>
+                <div class="form-group">
+                    <label for="name2">Details</label>
+                    <!-- <span class="fa fa-user form-left-icon"></span> -->
+                    {{exp_form.details|add_class:"form-control"}}
+                </div>
+
+                <div class="form-group">
+                    <label for="name2">Category</label>
+                    <!-- <span class="fa fa-th form-left-icon"></span> -->
+                    {{exp_form.category|add_class:"form-control"}}
+                </div>
+                <div class="form-group">
+                    <label for="name2">Date</label>
+                    <!-- <span class="fa fa-calendar form-left-icon"></span> -->
+                    {{exp_form.date|add_class:"form-control"|attr:"type:date"}}
+                </div>                                       
+                <div class="form-group">
+                    <label for="name2">Cost</label>
+                    <!-- <span class="fa fa-money form-left-icon"></span> -->
+                    {{exp_form.cost|add_class:"form-control"|attr:"readonly"}}
+                </div>                                                       
+            	<button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i class="fa fa-check"></i>Submit</button>
+            </form>
+
+
+            <!-- /.col-md-12 -->
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+
+{% endblock %}

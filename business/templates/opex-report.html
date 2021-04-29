@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %} OPEX Report{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:reports' id=business.id %}">Reports</a></li>
+<li><a href="{% url 'business:opex-time' id=business.id %}">OPEX</a></li>
+<li>OPEX report</li>
+{% endblock%}
+
+{% block content %}
+
+<style type="text/css">
+  #chartdiv-1 {
+    width: 100%;
+    height: 500px;
+  }
+</style>
+
+<div class="container bg-white">
+  <div class="row">
+    <div class="">
+      <div class="">
+        <div>
+          <img src="{% static 'img/report-heading.png' %}" alt="" width="100%">
+        </div>
+        <div style="padding: 20px !important;">
+          <div class="row mb-5">
+
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <a class="dashboard-stat bg-success" href="#">
+                <span class="number counter">{{expenses_total}}</span>
+                <span class="name">Expenses</span>
+                <span class="bg-icon"><i class="fa fa-cubes" style="padding: 12px;"></i></span>
+              </a>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <a class="dashboard-stat bg-danger" href="#">
+                <span class="number counter">{{cost}}</span>
+                <span class="name">Cost</span>
+                <span class="bg-icon"><i class="fa fa-money" style="padding: 12px;"></i></span>
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="panel-heading">
+          <div class="panel-title">
+            <h3 style="float: left; font-weight: 700 !important; color: #28a745 !important;">OPEX Report</h3>
+            <a href="{% url 'business:opex-report' id=business.id d=day %}?fr={{fr}}&to={{to}}&pdf=1"
+              class="btn btn-primary m-10" style="float: right;" target="_blank"><i class="fa fa-print fa-lg"
+                style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+            <a href="{% url 'business:opex-report' id=business.id d=day %}?fr={{fr}}&to={{to}}&xl=2"
+              class="btn btn-success" style="float: right; margin: 10px 0px 0px 0px;" target="_blank"><i
+                class="fa fa-file-excel-o fa-lg" style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+          </div>
+        </div>
+
+        <br><br><br>
+        <div class="panel-body bg-white">
+          <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Date</th>
+                  <th>Cost</th>
+                </tr>
+              </thead>
+              <tfoot>
+              </tfoot>
+              {% if expenses %}
+              <tbody id="myTable">
+                {% for expense in expenses %}
+
+                <tr>
+                  <td>{{forloop.counter}}</td>
+                  <td>{{expense.name}}</td>
+                  <td>{{expense.category}}</td>
+                  <td>{{expense.date}}</td>
+                  <td>{{expense.cost}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <th colspan="4" class="text-center">Total</th>
+                  <th>{{cost}}</th>
+                </tr>
+                {% else %}
+                <tr>
+                  <td colspan="5" class="text-center">0 Expenses</td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-bold" style="font-weight: 500;padding-left: 30px;"><u>Expenses</u></h3>
+        </div>
+        <div id="chartdiv-1" class="p-20"></div>
+
+      </div>
+
+      {{exps|json_script:"exp"}}
+    </div>
+  </div>
+</div>
+
+<!-- Resources -->
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+
+<script>
+  $(function () {
+    $('.counter').counterUp();
+  });
+</script>
+
+<!-- Chart code -->
+<script>
+  var value = JSON.parse(document.getElementById('exp').textContent);
+  am4core.ready(function () {
+
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    var chart = am4core.create("chartdiv-1", am4charts.PieChart3D);
+    chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+    chart.legend = new am4charts.Legend();
+
+    chart.data = value; // Data
+
+    var series = chart.series.push(new am4charts.PieSeries3D());
+    series.dataFields.value = "cost";
+    series.dataFields.category = "name";
+
+  }); // end am4core.ready()
+</script>
+
+{% endblock %}

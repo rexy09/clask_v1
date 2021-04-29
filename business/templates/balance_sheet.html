@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+Balance Sheet
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:financial_statements' id=business.id %}">Financial Statements</a></li>
+<li>Balance Sheet</li>
+{% endblock%}
+
+{% block content %}
+<style>
+    table th {
+        background-color: #7ebb45;
+        color: white;
+        font-weight: 700;
+        font-size: large;
+      }
+</style>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h3 style="float: left; font-weight: 700 !important; color: #28a745 !important;" class="">Balance Sheet</h3>
+                        <a href="{% url 'business:balance-sheet' id=business.id %}?pdf=1"
+                            class="btn btn-primary" style="float: right; margin: 20px;" target="_blank"><i class="fa fa-print fa-lg"
+                                style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+                        <a href="{% url 'business:balance-sheet' id=business.id %}?xl=1"
+                            class="btn btn-success" style="float: right; margin: 20px 0px 0px 0px;" target="_blank"><i class="fa fa-file-excel-o fa-lg"
+                                style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+                    </div>
+                </div>
+                <div class="panel-body p-20">
+
+                    <table id="example" class="display table table-striped" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Assets</th>
+                                <th>Liabilities</th>
+                                <th>Equity</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td style="font-weight: 700;">{{assets}}</td>
+                                <td style="font-weight: 700;">{{liabilities}}</td>
+                                <td style="font-weight: 700;">{{equity}}</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+
+</div>
+{% endblock %}

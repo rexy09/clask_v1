@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Edit Inventory
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=inventory.business.id %}">{{inventory.business.name}}</a></li>
+<li><a href="{% url 'business:inventory' id=inventory.business.id %}">Inventory</a></li>
+<li><a href="{% url 'business:inventory_list' id=inventory.business.id %}">Inventory List</a></li>
+<li>Edit Inventory</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Inventory Info.</h5>
+                    </div>
+                </div>
+                <div class="panel-body p-20">
+
+                    <form class="col-md-10 col-md-offset-1" method="POST" action=".">
+                        {% csrf_token %}
+                        <style>
+                            .product-disable {pointer-events: none;}
+                        </style>
+                        <div class="form-group">
+                            <label for="name2">Select Product</label>
+                            <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                            {{form.product|add_class:"form-control product-disable"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">                            
+                            <label for="username2">Quantity</label>
+                            <!-- <span class="fa fa-sort-numeric-up-alt form-left-icon"></span> -->
+                            {{form.quantity|add_class:"form-control"|attr:"placeholder:Quantity"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">                            
+                            <label for="username2">Remain</label>
+                            <!-- <span class="fa fa-sort-numeric-up-alt form-left-icon"></span> -->
+                            {{form.remain|add_class:"form-control"|attr:"placeholder:Remain"|attr:"readonly"}}
+                        </div>
+                        <div class="form-group">                            
+                            <label for="username2">Damage</label>
+                            <!-- <span class="fa fa-sort-numeric-up-alt form-left-icon"></span> -->
+                            {{form.damage|add_class:"form-control"|attr:"placeholder:Damage"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Currency</label>
+                            <!-- <span class="fa fa-coins form-left-icon"></span> -->
+                            {{form.currency|add_class:"form-control"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Product Cost</label>
+                            <!-- <span class="fa fa-money-bill form-left-icon"></span> -->
+                            {{form.product_cost|add_class:"form-control"|attr:"placeholder:Product Cost"}}
+                        </div>
+                        <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i class="fa fa-check"></i>Update</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+
+</div>
+
+{% endblock %}

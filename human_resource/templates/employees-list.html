@@ -1,0 +1,569 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+
+{% block title %}
+Employees
+{% endblock %}
+
+
+{% block breadcrumb %}
+<li><a href="{% url 'human_resource:human-resource-home' %}">Human Resources</a></li>
+<li>Employees</li>
+{% endblock%}
+
+
+{% block content %}
+
+<style type="text/css">
+  .fab {
+    background: #4B9848;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    text-align: center;
+    color: #FFF;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5), 3px 3px 3px rgba(0, 0, 0, 0.25);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.6667em;
+    display: inline-block;
+    cursor: default;
+    padding-top: 8px;
+  }
+
+  .fab span {
+    vertical-align: text-bottom;
+    font-size: 45px;
+  }
+
+  .employeeData {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  employeeData.span {
+    font-weight: 700;
+  }
+</style>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+
+
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{message.tags}}">
+        {{message}}
+      </div>
+      {% endfor %}
+      {% endif %}
+      <div class="panel">
+        <div class="panel-body bg-white">
+          <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0" id="example">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Employee ID</th>
+                  <th>Name</th>
+                  <th>Nida</th>
+                  <th>Position</th>
+                  <th>Department</th>
+                  <th>Salary</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tfoot>
+                <tr>
+                  <th>#</th>
+                  <th>Employee ID</th>
+                  <th>Name</th>
+                  <th>Nida</th>
+                  <th>Position</th>
+                  <th>Department</th>
+                  <th>Salary</th>
+                  <th>Action</th>
+                </tr>
+              </tfoot>
+              {% if employees %}
+              <tbody id="myTable">
+                {% for employee in employees %}
+
+                <tr>
+                  <td>{{forloop.counter}}</td>
+                  <td>{{employee.id_no}}</td>
+                  <td>{{employee.full_name}}</td>
+                  <td>{{employee.nida}}</td>
+                  <td>{{employee.position}}</td>
+                  <td>{{employee.department}}</td>
+                  <td>{{employee.salary}}</td>
+                  <td>
+                    <a href="#" class="hvr-icon-push hvr-shrink" data-micron-timing="linear" data-micron="bounce"
+                      data-micron-duration=".">
+                      <button class="btn btn-success btn-sm" data-micron-timing="linear" data-micron="bounce"
+                        data-micron-duration="." data-toggle="modal" data-target="#employeeDetailslModal"
+                        data-name="{{employee.full_name}}" data-nida="{{employee.nida}}"
+                        data-birth="{{employee.birth_date}}" data-position="{{employee.position}}"
+                        data-salary="{{employee.salary}}" data-department="{{employee.department}}"
+                        data-id="{{employee.id_no}}" data-gender="{{employee.gender}}"
+                        data-marital="{{employee.marital_status}}" data-work_phone="{{employee.work_phone}}"
+                        data-mobile_phone="{{employee.mobile_phone}}" data-contract="{{employee.contract_period}}"
+                        data-period="{{employee.period}}" data-branch="{{employee.branch}}"
+                        data-postal="{{employee.postal_code}}" data-employment_type="{{employee.employment_type}}"
+                        data-nationality="{{employee.nationality}}" data-country="{{employee.country}}"
+                        data-address="{{employee.address}}" data-city="{{employee.city}}"
+                        data-signature="{{employee.signature}}" data-photo="{{employee.image}}"
+                        data-starting_date="{{employee.starting_date}}" data-performance="{{employee.performance}}"
+                        data-business="{{employee.business}}">
+                        <i class="fa fa-eye hvr-icon"></i>
+                        view
+                      </button>
+                    </a>
+
+                    <a href="{% url 'human_resource:employee-update' id=employee.id %}" class="hvr-icon-push hvr-shrink"
+                      data-micron-timing="linear" data-micron="bounce" data-micron-duration=".">
+                      <button class="btn btn-info btn-sm" data-micron-timing="linear" data-micron="bounce"
+                        data-micron-duration=".">
+                        <i class="fa fa-edit hvr-icon"></i>
+                        edit
+                      </button>
+                    </a>
+
+                    <a href="{% url 'human_resource:employee-delete' id=employee.id %}" class="hvr-icon-push hvr-shrink"
+                      data-micron-timing="linear" data-micron="bounce" data-micron-duration=".">
+                      <button class="btn btn-danger btn-sm" data-micron-timing="linear" data-micron="bounce"
+                        data-micron-duration=".">
+                        <i class="fa fa-trash hvr-icon"></i>
+                        delete
+                      </button>
+                    </a>
+                  </td>
+                </tr>
+
+                {% endfor %}
+
+                {% else %}
+                <tr>
+                  <td colspan="8" class="text-center">0 employees</td>
+                </tr>
+              </tbody>
+              {% endif %}
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- Employee Details Modal -->
+<div class="modal fade" id="employeeDetailslModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Employee details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <!--Personal Information-->
+          <div style="background-color: whitesmoke;padding:10px;border-radius:10px;">
+            <div class="row p-3">
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                <img class="img img-fluid rounded-circle" id="profile-image" width="240px" height="240px"
+                  style="border-radius:50%;margin-top:10px;object-fit: cover;">
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                <span style="font-size: 20px;font-weight:700;">Personal Information</span>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Fullname </span>
+                  <div id="name"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Gender </span>
+                  <div id="gender"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Birthdate </span>
+                  <div id="birth_date"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Address </span>
+                  <div id="address"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Mobile Phone </span>
+                  <div id="mobile_phone"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">City </span>
+                  <div id="city"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Postal </span>
+                  <div id="postal"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">NIDA </span>
+                  <div id="nida"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Staff Information-->
+          <div style="background-color: whitesmoke;padding:10px;border-radius:10px;margin-top:20px;">
+            <div class="row">
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                <span style="font-size: 20px;font-weight:700;">Staff Information</span>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Business </span>
+                  <div id="business"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Id </span>
+                  <div id="id"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Employment-Type </span>
+                  <div id="employment_type"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Position </span>
+                  <div id="position"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Salary </span>
+                  <div id="salary"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Starting Date </span>
+                  <div id="starting_date"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Contract </span>
+                  <div id="contract"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Period </span>
+                  <div id="period"></div>
+                </div>
+
+              </div>
+
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6" style="margin-top:20px">
+
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Branch </span>
+                  <div id="branch"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Department </span>
+                  <div id="department"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Signature </span>
+                  <div id="signature"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Work Phone </span>
+                  <div id="work_phone"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Salary </span>
+                  <div id="salary"></div>
+                </div>
+                <div class="employeeData">
+                  <span style="font-weight: 600;margin-right:5px;">Performance </span>
+                  <div id="performance"></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- End of Employee details modal -->
+
+<!-- Employyee Registration Modal -->
+<div class="modal fade" id="employeeRegistrationlModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Employee registration</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <form class="" method="POST" action="" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label for="name2">Full Name</label>
+            {{e_form.full_name|add_class:"form-control"|attr:"placeholder:Enter full name"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Birth Date</label>
+            {{e_form.birth_date|add_class:"form-control"|attr:"placeholder:Birth Date"|attr:"type:date"}}
+          </div>
+          <div class="form-group">
+            <label for="name2">Gender</label>
+            {{e_form.gender|add_class:"form-control"|attr:"placeholder:Gender"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Marital status</label>
+            {{e_form.marital_status|add_class:"form-control"|attr:"placeholder:Marital status"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Email</label>
+            {{e_form.email|add_class:"form-control"|attr:"placeholder:Email"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Work phone</label>
+            {{e_form.work_phone|add_class:"form-control"|attr:"placeholder:Work phone"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Mobile phone</label>
+            {{e_form.mobile_phone|add_class:"form-control"|attr:"placeholder:Mobile phone"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Address</label>
+            {{e_form.address|add_class:"form-control"|attr:"placeholder:Address"}}
+          </div>
+
+
+          <div class="form-group">
+            <label for="name2">Nationality</label>
+            {{e_form.nationality|add_class:"form-control"|attr:"placeholder:Nationality"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Country</label>
+            {{e_form.country|add_class:"form-control"|attr:"placeholder:Country"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">City</label>
+            {{e_form.city|add_class:"form-control"|attr:"placeholder:City"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Postal code</label>
+            {{e_form.postal_code|add_class:"form-control"|attr:"placeholder:Postal Code"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Employment type</label>
+            {{e_form.employment_type|add_class:"form-control"|attr:"placeholder:Employment type"}}
+          </div>
+
+          <div class="form-group ">
+            <label for="name2">Department</label>
+            {{e_form.department|add_class:"form-control"|attr:"placeholder:Department"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Position</label>
+            {{e_form.position|add_class:"form-control"|attr:"placeholder:Position"}}
+          </div>
+          <label>Other Position</label>
+          <input type="checkbox" id="myCheck" onchange="handleChange()">
+          <div class="form-group" id="other-position" style="display: none;">
+            {{e_form.other_position|add_class:"form-control"|attr:"placeholder:Position"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Business</label>
+            {{e_form.business|add_class:"form-control"|attr:"placeholder:Business name"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Branch</label>
+            {{e_form.branch|add_class:"form-control"|attr:"placeholder:Branch"}}
+          </div>         
+
+          <div class="form-group">
+            <label for="name2">Salary</label>
+            {{e_form.salary|add_class:"form-control"|attr:"placeholder:Salary"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Starting date</label>
+            {{e_form.starting_date|add_class:"form-control"|attr:"placeholder:Starting date"|attr:"type:date"}}
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label for="name2">Contract Period</label>
+              {{e_form.contract_period|add_class:"form-control"|attr:"placeholder:Contract period"}}
+            </div>
+            <div class="col-md-6">
+              <label for="name2">Duration</label>
+              {{e_form.period|add_class:"form-control"|attr:"placeholder:Duration"}}
+            </div>          
+          </div>
+
+          <div class="form-group">
+            <label for="name2">NIDA</label>
+            {{e_form.nida|add_class:"form-control"|attr:"placeholder:NIDA number"}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Performance</label>
+            {{e_form.performance|add_class:"form-control"|attr:"placeholder:Performance"}}
+          </div>
+
+
+          <div class="form-group">
+            <label for="name2">Profile photo</label>
+            {{e_form.image}}
+          </div>
+
+          <div class="form-group">
+            <label for="name2">Signature</label>
+            {{e_form.signature}}
+          </div>
+
+          <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i
+              class="fa fa-check"></i>Submit</button>
+        </form>
+      </div>
+      <div class="modal-footer mt-20">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- FAB for EMployee registration -->
+<div class="fab" id="masterfab" data-toggle="modal" data-target="#employeeRegistrationlModal"><span>+</span></div>
+
+</div>
+
+
+<script>
+  $('#employeeDetailslModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var name = button.data('name') // Extract info from data-* attributes
+    var nida = button.data('nida') // Extract info from data-* attributes
+    var birth_date = button.data('birth') // Extract info from data-* attributes
+    var id = button.data('id') // Extract info from data-* attributes
+    var gender = button.data('gender') // Extract info from data-* attributes
+    var marital_status = button.data('marital') // Extract info from data-* attributes
+    var employment_type = button.data('employment_type') // Extract info from data-* attributes
+    var position = button.data('position') // Extract info from data-* attributes
+    var starting_date = button.data('starting_date') // Extract info from data-* attributes
+    var city = button.data('city') // Extract info from data-* attributes
+    var nationality = button.data('nationality') // Extract info from data-* attributes
+    var country = button.data('country') // Extract info from data-* attributes
+    var contract = button.data('contract') // Extract info from data-* attributes
+    var period = button.data('period') // Extract info from data-* attributes
+    var branch = button.data('branch') // Extract info from data-* attributes
+    var department = button.data('department') // Extract info from data-* attributes
+    var address = button.data('address') // Extract info from data-* attributes
+    var signature = button.data('signature') // Extract info from data-* attributes
+    var image = button.data('photo') // Extract info from data-* attributes
+    var work_phone = button.data('work_phone') // Extract info from data-* attributes
+    var mobile_phone = button.data('mobile_phone') // Extract info from data-* attributes
+    var salary = button.data('salary') // Extract info from data-* attributes
+    var postal = button.data('postal') // Extract info from data-* attributes
+    var business = button.data('business') // Extract info from data-* attributes
+    var performance = button.data('performance') // Extract info from data-* attributes
+    console.log(name)
+    console.log(position)
+    console.log(image)
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+
+    //Personal Information
+    modal.find('.modal-title').text('Employee Details')
+    modal.find('.modal-body #name').text(name)
+    modal.find('.modal-body #nida').text(nida)
+    modal.find('.modal-body #gender').text(gender)
+    modal.find('.modal-body #city').text(city)
+    modal.find('.modal-body #birth_date').text(birth_date)
+    modal.find('.modal-body #profile-image').attr('src', 'http://127.0.0.1:8000/media/' + image)
+    modal.find('.modal-body #address').text(address)
+    modal.find('.modal-body #mobile_phone').text(mobile_phone)
+    modal.find('.modal-body #postal').text(postal)
+    modal.find('.modal-body #business').text(business)
+
+    //Staff Information
+    modal.find('.modal-body #id').text(id)
+    modal.find('.modal-body #employment_type').text(employment_type)
+    modal.find('.modal-body #position').text(position)
+    modal.find('.modal-body #salary').text(salary)
+    modal.find('.modal-body #starting_date').text(starting_date)
+    modal.find('.modal-body #contract').text(contract)
+    modal.find('.modal-body #period').text(period)
+
+    //Staff Information
+    modal.find('.modal-body #branch').text(branch)
+    modal.find('.modal-body #department').text(department)
+    modal.find('.modal-body #signature').attr('src', 'http://127.0.0.1:8000/media/' + image)
+    modal.find('.modal-body #work_phone').text(work_phone)
+    modal.find('.modal-body #salary').text(salary)
+    modal.find('.modal-body #performance').text(performance)
+
+  })
+</script>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+
+<script>
+  const handleChange = () => {
+    var check = document.getElementById("myCheck").checked;
+    if (check === true) {
+      var element = document.getElementById("other-position");
+      for (var x = 0; x <= 1; x++) {
+        element.style.display = "block";
+      }
+    } else {
+      var element = document.getElementById("other-position");
+      for (var x = 0; x <= 1; x++) {
+        element.style.display = "none";
+      }
+    }
+  }
+
+  $(function ($) {
+    $('#example').DataTable();
+  });
+</script>
+{% endblock %}

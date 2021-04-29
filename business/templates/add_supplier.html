@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Add Supplier
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:procurement_management' id=business.id %}">Procurement Management Unit</a></li>
+<li><a href="{% url 'business:suppliers' id=business.id %}">Supplier List</a></li>
+<li>Add Supplier</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Supplier Info.</h5>
+                    </div>
+                </div>
+                <div class="panel-body p-20">
+
+                    <form class="col-md-10 col-md-offset-1" method="POST" action=".">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name2">Name</label>
+                            <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                            {{form.name|add_class:"form-control"|attr:"placeholder:Name"}}
+                        </div>
+                        <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i class="fa fa-check"></i>Submit</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+
+</div>
+
+{% endblock %}

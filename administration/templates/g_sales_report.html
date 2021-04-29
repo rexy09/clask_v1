@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+General Sales Report
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'administration:general_reports' %}">General Reports</a></li>
+<li><a href="{% url 'administration:sales_time' %}">Time</a></li>
+<li>Report</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+
+            <div class="panel">
+                <div>
+                    <img src="{% static 'img/report-heading.png' %}" alt="" width="100%">
+                </div>
+                <div style="padding: 20px !important;">
+                    <div class="row mb-5">
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat bg-danger" href="#">
+                                <span class="number counter">{{summary.total_paid|floatformat:0|intcomma}}</span>
+                                <span class="name">Revenue</span>
+                                <span class="bg-icon"><i class="fa fa-money" style="padding: 12px;"></i></span>
+                            </a>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat bg-success" href="#">
+                                <span class="number counter">{{summary.total_quantity}}</span>
+                                <span class="name">Quantity</span>
+                                <span class="bg-icon"><i class="fa fa-cubes" style="padding: 12px;"></i></span>
+                            </a>
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat bg-primary" href="#">
+                                <span class="number counter">{{summary.total_profit|floatformat:0|intcomma}}</span>
+                                <span class="name">Profit</span>
+                                <span class="bg-icon"><i class="fa fa-bar-chart-o" style="padding: 12px;"></i></span>
+                            </a>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat bg-info" href="#">
+                                <span class="number counter">{{summary.total_tax|floatformat:0|intcomma}}</span>
+                                <span class="name">Tax</span>
+                                <span class="bg-icon"><i class="fa fa-calculator" style="padding: 12px;"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat bg-primary" href="#">
+                                <span class="number counter">{{summary.total_discount|floatformat:0|intcomma}}</span>
+                                <span class="name">Discount</span>
+                                <span class="bg-icon"><i class="fa fa-calculator" style="padding: 12px;"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h3 style="float: left; font-weight: 700 !important; color: #28a745 !important;" class="">Sale
+                            Report</h3>
+                        <a href="{% url 'administration:sales_report' d=day %}?fr={{fr}}&to={{to}}&pdf=1"
+                            class="btn btn-primary" style="float: right; margin: 20px;" target="_blank"><i class="fa fa-print fa-lg"
+                                style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+                        <a href="{% url 'administration:sales_report' d=day %}?fr={{fr}}&to={{to}}&xl=2"
+                            class="btn btn-success" style="float: right; margin: 20px 0px 0px 0px;" target="_blank"><i class="fa fa-file-excel-o fa-lg"
+                                style="margin: 0px; color: rgb(255, 255, 255) !important;"></i> </a>
+                    </div>
+                </div>
+                <br><br>
+                <div class="panel-body p-20 ">
+
+                    <div class="table-responsive">
+                        <table id="example" class="display table table-striped table-bordered" cellspacing="0"
+                            width="100%">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product Name</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Profit</th>
+                                    <th>Paid</th>
+                                    <th>Discount</th>
+                                    <th>Tax</th>
+                                    <th>Order No.</th>
+                                    <th>Status</th>
+                                    <th>Date Created</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product Name</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Profit</th>
+                                    <th>Paid</th>
+                                    <th>Discount</th>
+                                    <th>Tax</th>
+                                    <th>Order No.</th>
+                                    <th>Status</th>
+                                    <th>Date Created</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                {% for sale in sales %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{sale.inventory.product.name}}</td>
+                                    <td>{{sale.quantity}}</td>
+                                    <td>{{sale.total|intcomma}} {{sale.inventory.product.currency}}</td>
+                                    <td>{{sale.profit|intcomma}} {{sale.inventory.product.currency}}</td>
+                                    <td>{{sale.amount_paid|intcomma}} {{sale.inventory.product.currency}}</td>
+                                    <td>{{sale.discount}} {{sale.discount_unit}}</td>
+                                    <td>{{sale.tax}} {{sale.tax_unit}}</td>
+                                    <td>{{sale.order_no}}</td>
+                                    <td>{{sale.status}}</td>
+                                    <td>{{sale.created_at.date}}</td>
+                                </tr>
+
+                                {% empty %}
+                                <tr>
+                                    <td colspan="11" class="text-center">
+                                        No Sale records
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {{products|json_script:"my_products"}}
+
+                    <!-- Styles -->
+                    <style>
+                        #chartdiv-1 {
+                            width: 100%;
+                            height: 500px;
+                        }
+
+                        #chartdiv-2 {
+                            width: 100%;
+                            height: 500px;
+                        }
+
+                        #chartdiv-3 {
+                            width: 100%;
+                            height: 500px;
+                        }
+                    </style>
+
+                    <!-- Resources -->
+                    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+                    <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+                    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+                    <!-- Chart code -->
+                    <script>
+                        var value = JSON.parse(document.getElementById('my_products').textContent);
+                        am4core.ready(function () {
+
+                            // Themes begin
+                            am4core.useTheme(am4themes_animated);
+                            // Themes end
+
+                            var chart = am4core.create("chartdiv-1", am4charts.PieChart3D);
+                            chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+                            chart.legend = new am4charts.Legend();
+
+                            chart.data = value; // Data
+
+                            var series = chart.series.push(new am4charts.PieSeries3D());
+                            series.dataFields.value = "quantity_sold";
+                            series.dataFields.category = "name";
+
+                        }); // end am4core.ready()
+                    </script>
+
+
+                    <!-- Chart code -->
+                    <script>
+                        am4core.ready(function () {
+                            var value = JSON.parse(document.getElementById('my_products').textContent);
+                            // Themes begin
+                            am4core.useTheme(am4themes_animated);
+                            // Themes end
+
+                            var chart = am4core.create("chartdiv-2", am4charts.XYChart);
+                            chart.padding(40, 40, 40, 40);
+
+                            var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+                            categoryAxis.renderer.grid.template.location = 0;
+                            categoryAxis.dataFields.category = "name";
+                            categoryAxis.renderer.minGridDistance = 1;
+                            categoryAxis.renderer.inversed = true;
+                            categoryAxis.renderer.grid.template.disabled = true;
+
+                            var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+                            valueAxis.min = 0;
+
+                            var series = chart.series.push(new am4charts.ColumnSeries());
+                            series.dataFields.categoryY = "name";
+                            series.dataFields.valueX = "revenue_sold";
+                            series.tooltipText = "{valueX.value}"
+                            series.columns.template.strokeOpacity = 0;
+                            series.columns.template.column.cornerRadiusBottomRight = 5;
+                            series.columns.template.column.cornerRadiusTopRight = 5;
+
+                            var labelBullet = series.bullets.push(new am4charts.LabelBullet())
+                            labelBullet.label.horizontalCenter = "left";
+                            labelBullet.label.dx = 10;
+                            labelBullet.label.text = "{values.valueX.workingValue.formatNumber('#.0as')}";
+                            labelBullet.locationX = 1;
+
+                            // as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
+                            series.columns.template.adapter.add("fill", function (fill, target) {
+                                return chart.colors.getIndex(target.dataItem.index);
+                            });
+
+                            categoryAxis.sortBySeries = series;
+                            chart.data = value;
+
+
+
+                        }); // end am4core.ready()
+                    </script>
+
+                    <!-- Chart code -->
+                    <script>
+                        var value = JSON.parse(document.getElementById('my_products').textContent);
+                        am4core.ready(function () {
+
+                            // Themes begin
+                            am4core.useTheme(am4themes_animated);
+                            // Themes end
+
+                            var chart = am4core.create("chartdiv-3", am4charts.PieChart3D);
+                            chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+                            chart.legend = new am4charts.Legend();
+
+                            chart.data = value; // Data
+
+                            var series = chart.series.push(new am4charts.PieSeries3D());
+                            series.dataFields.value = "profit_sold";
+                            series.dataFields.category = "name";
+
+                        }); // end am4core.ready()
+                    </script>
+
+
+                    <!-- HTML -->
+                    <div>
+                        <h3 class="text-bold" style="font-weight: bold;">Sales by Quantity</h3>
+                    </div>
+                    <div id="chartdiv-1"></div>
+
+                    <!-- HTML -->
+                    <div>
+                        <h3 class="text-bold" style="font-weight: bold;">Sales by Revenue</h3>
+                    </div>
+                    <div id="chartdiv-2"></div>
+
+                    <!-- HTML -->
+                    <div>
+                        <h3 class="text-bold" style="font-weight: bold;">Sales by Profit</h3>
+                    </div>
+                    <div id="chartdiv-3"></div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    $(function () {
+        $('.counter').counterUp();
+    });
+</script>
+{% endblock %}

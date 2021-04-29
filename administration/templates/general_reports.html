@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}
+General Reports
+{% endblock %}
+
+{% block breadcrumb %}
+<li>General Reports</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="{% url 'administration:sales_time' %}">
+                <span class="number counter"></span>
+                <span class="name">Sales</span>
+                <span class="bg-icon"><i class="fa fa-bar-chart" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="{% url 'administration:inventory_product' %}">
+                <span class="number counter"></span>
+                <span class="name">Inventory</span>
+                <span class="bg-icon"><i class="fa fa-product-hunt" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-success" href="{% url 'administration:payroll-time' %}">
+                <span class="number counter"></span>
+                <span class="name">Payroll</span>
+                <span class="bg-icon"><i class="fa fa-credit-card" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-primary" href="{% url 'administration:opex_time' %}">
+                <span class="number counter"></span>
+                <span class="name">OPEX</span>
+                <span class="bg-icon"><i class="fa fa-cogs" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+
+    </div>
+    <div class="row mt-20">
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-warning" href="{% url 'administration:customer_report' %}">
+                <span class="number counter"></span>
+                <span class="name">Customers</span>
+                <span class="bg-icon"><i class="fa fa-users" style="padding: 12px;"></i></span>
+            </a>
+
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <a class="dashboard-stat bg-danger" href="{% url 'administration:procurement_time' %}">
+                <span class="number counter"></span>
+                <span class="name">Procurement</span>
+                <span class="bg-icon"><i class="fa fa-cubes" style="padding: 12px;"></i></span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

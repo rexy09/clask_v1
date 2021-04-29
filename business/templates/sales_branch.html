@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Business Branch
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li>Business Branch</li>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% for branch in branches %}
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-5">
+            <a class="dashboard-stat bg-danger" href="{% url 'business:sales_list' id=branch.id %}">
+                <span class="number counter"><i class="fa fa-code-branch"></i></span>
+                <span class="name">{{branch.location}}</span>
+                <span class="bg-icon"><i class="fa fa-code-fork" style="padding: 12px;"></i></span>
+            </a>
+            
+        </div>
+        {% empty%}
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="alert alert-info" role="alert">
+                <strong>Info!</strong> <p>Please add business branch to start selling.</p>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+   
+</div>
+{% endblock %}

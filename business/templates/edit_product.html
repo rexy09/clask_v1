@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Edit Product
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=product.business.id %}">{{product.business.name}}</a></li>
+<li><a href="{% url 'business:inventory' id=product.business.id %}">Inventory</a></li>
+<li><a href="{% url 'business:products' id=product.business.id %}">Products</a></li>
+<li>Edit Product</li>
+{% endblock%}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Product Info.</h5>
+                    </div>
+                </div>
+                <div class="panel-body p-20">
+
+                    <form class="col-md-10 col-md-offset-1" method="POST" action=".">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name2">Product Name</label>
+                            <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                            {{form.name|add_class:"form-control"|attr:"placeholder:Product Name"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Unit</label>
+                            <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                            {{form.unit|add_class:"form-control"|attr:"placeholder:Unit"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Minimum Stock Quantity</label>
+                            <!-- <span class="fa fa-pencil form-left-icon"></span> -->
+                            {{form.min_quantity|add_class:"form-control"|attr:"placeholder:Min Quantity"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Product Code</label>
+                            <!-- <span class="fa fa-barcode form-left-icon"></span> -->
+                            {{form.product_code|add_class:"form-control"|attr:"placeholder:Product Code"}}
+                        </div>
+                        <div class="form-group ">
+                            <label for="username2">Currency</label>
+                            <!-- <span class="fa fa-barcode form-left-icon"></span> -->
+                            {{form.currency|add_class:"form-control"|attr:"placeholder:Sell Price"}}
+                        </div>
+                        <div class="form-group">
+                            <label for="username2">Sell Price</label>
+                            <!-- <span class="fa fa-barcode form-left-icon"></span> -->
+                            {{form.sell_price|add_class:"form-control"|attr:"placeholder:Sell Price"}}
+                        </div>
+                        <button type="submit" class="btn btn-success btn-rounded btn-wide pull-right"><i class="fa fa-check"></i>Update</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+
+</div>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+<script>
+    $(function ($) {
+        $('#example').DataTable();
+    });
+</script>
+{% endblock %}

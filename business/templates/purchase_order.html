@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Purchase Order List
+{% endblock %}
+
+{% block breadcrumb %}
+<li><a href="{% url 'business:business_profile' id=business.id %}">{{business.name}}</a></li>
+<li><a href="{% url 'business:procurement_management' id=business.id %}">Procurement Management Unit</a></li>
+<li>Purchase Order List</li>
+{% endblock%}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h5>Purchase Order List</h5>
+                    </div>
+                </div>
+                <div class="panel-body p-20 table-responsive">
+
+                    <table id="example" class="display table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>PO No.</th>
+                                <th>Supplier</th>
+                                <th>Delivery</th>
+                                <th>Prepared By</th>
+                                <th>Total</th>
+                                <th>Date Created</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>PO No.</th>
+                                <th>Supplier</th>
+                                <th>Delivery</th>
+                                <th>Prepared By</th>
+                                <th>Total</th>
+                                <th>Date Created</th>
+                                <th>Action</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for purchase in purchases %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{purchase.po_no}}</td>
+                                <td>{{purchase.supplier}}</td>
+                                <td>{{purchase.delivery}}</td>
+                                <td>{{purchase.employee.user_employee.full_name}} ({{purchase.employee.user_employee.position}})</td>
+                                <td>{{purchase.total}} TZS</td>
+                                <td>{{purchase.created_at.date}}</td>
+                                <td>
+
+                                    <a href="{% url 'business:view_purchase_order' id=purchase.id %}"
+                                        class="btn btn-sm btn-info">
+                                        <i class="fa fa-eye" style="margin: 0px !important;"></i>
+                                    </a>
+                                    {% if not purchase.published and purchase.employee == request.user %}
+                                    <a href="{% url 'business:edit_purchase_order' id=purchase.id %}"
+                                        class="btn btn-sm btn-primary">
+                                        <i class="fa fa-edit" style="margin: 0px !important;"></i>
+                                    </a>
+                                    {% endif %}
+
+                                    
+                                    {% if purchase.published and request.user.user_employee.position == 'Accountant'  and purchase.positive_check_list.count == 0 %}
+                                    <a href="{% url 'business:purchase_order_check_approve' id=purchase.id %}" class="btn btn-sm btn-success btn-labeled">
+                                        <span class="btn-label btn-label-left"><i class="fa fa-check"></i></span>Check
+                                    </a>
+                                    <a href="{% url 'business:purchase_order_check_decline' id=purchase.id %}" class="btn btn-sm btn-danger btn-labeled">
+                                        <span class="btn-label btn-label-left"><i class="fa fa-close"></i></span>Decline
+                                    </a>                                        
+                                    {% endif %}
+
+                                    {% if purchase.published and request.user.user_employee.position == 'Financial Manager'  and purchase.positive_check_list.count > 0 and purchase.positive_approve_list.count == 0 %}
+                                    <a href="{% url 'business:purchase_order_approve' id=purchase.id %}" class="btn btn-sm btn-success btn-labeled">
+                                        <span class="btn-label btn-label-left"><i class="fa fa-check"></i></span>Approve
+                                    </a>
+                                    <a href="{% url 'business:purchase_order_decline' id=purchase.id %}" class="btn btn-sm btn-danger btn-labeled">
+                                        <span class="btn-label btn-label-left"><i class="fa fa-close"></i></span>Decline
+                                    </a>                                        
+                                    {% endif %}
+
+                                    {% if purchase.published and request.user.user_employee.position == 'CEO'  and purchase.positive_check_list.count > 0 and purchase.positive_approve_list.count > 0 and purchase.positive_authorize_list.count == 0 %}
+                                    <a href="{% url 'business:purchase_order_authorize_approve' id=purchase.id %}" class="btn btn-sm btn-success btn-labeled">
+                                        <span class="btn-label btn-label-left"><i class="fa fa-check"></i></span>Authorize
+                                    </a>
+                                    <a href="{% url 'business:purchase_order_authorize_decline' id=purchase.id %}" class="btn btn-sm btn-danger btn-labeled">
+                                        <span class="btn-label btn-label-left"><i class="fa fa-close"></i></span>Decline
+                                    </a>                                        
+                                    {% endif %}
+
+                                    {% if purchase.published  and purchase.positive_check_list.count > 0 and purchase.positive_approve_list.count > 0 and purchase.positive_authorize_list.count > 0 %}
+                                    <a href="{% url 'business:purchase_order_export_pdf' id=purchase.id %}" class="btn btn-sm btn-success" target="_blank">
+                                        <span class="btn-label btn-label-left"><i class="fa fa-print" style="margin: 0px !important;"></i></span>
+                                    </a>                                    
+                                    {% endif %}
+                                       
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center">
+                                    No Purchase Order records
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-6 -->
+
+    </div>
+    
+    {% if request.user.user_employee.position == 'Procurement Manager' or request.user.user_employee.position == 'Procurement Officer' or user.is_staff %}
+    <div class="fab" id="masterfab" data-toggle="modal" data-target="#expenseModal"> <a href="{% url 'business:add_purchase_order' id=business.id %}"><span>+</span></a></div>        
+    {% endif %}
+        
+</div>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+
+<script>
+    $(function ($) {
+        $('#example').DataTable();
+    });
+</script>
+{% endblock %}

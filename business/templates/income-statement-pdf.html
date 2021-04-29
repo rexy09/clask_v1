@@ -1,0 +1,125 @@
+{% load humanize %}
+{% load static %}
+
+<head>
+    <style>
+        @page {
+            size: A4;
+            /* Change from the default size of A4 */
+            margin: 0.5cm;
+            /* Set margin on each page */
+            background-color: #f5f4f3;
+
+        }
+
+        header {
+            height: auto;
+            width: 100%;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        body {
+            background-color: #ffffff;
+            font-size: 12px;
+            font-family: 'Lucida Sans';
+            background-image: url("{% static 'img/potraits.png' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+            border-collapse: collapse;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: whitesmoke;
+        }
+
+        table th {
+            background-color: #7ebb45;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th {
+            text-align: center;
+            padding: 5px;
+            font-size: 12px;
+        }
+
+        td {
+            text-align: center;
+            padding: 5px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <img src="{% static 'img/report-heading.png' %}" alt="">
+    </header>
+        <br><br>
+        <h1 style="color: #28a745;">Income Statement</h1>
+        <br>
+                    <table id="example" class="display table table-striped" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Particulars</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>Operating Revenue</td>
+                                <td>{{summary.total_paid|intcomma}}</td>
+                            </tr>
+                            <tr style="border-top: 2px solid black; border-bottom: 2px solid black;">
+                                <td style="font-weight: 700;">Total Income</td>
+                                <td style="font-weight: 700;">{{summary.total_paid|intcomma}}</td>
+                            </tr>
+                            <tr style="">
+                                <td style="font-weight: 700;">Operational Expense (OPEX)</td>
+                                <td style="font-weight: 700;">{{summary.opex|intcomma}}</td>
+                            </tr>
+                            <tr>
+                                <td>COGS</td>
+                                <td>{{summary.cogs|floatformat:2|intcomma}}</td>
+                            </tr>
+                            <tr style="">
+                                <td style="font-weight: 700;">EBIT</td>
+                                <td style="font-weight: 700;">{{summary.ebit|intcomma}}</td>
+                            </tr>     
+                            <tr style="">
+                                <td style="font-weight: 700;">EBITDA</td>
+                                <td style="font-weight: 700;">{{summary.ebitda|intcomma}}</td>
+                            </tr>                                                                                
+                            <tr>
+                                <td>Tax & Interest</td>
+                                <td>{{summary.tax_interest|floatformat:2|intcomma}}</td>
+                            </tr>
+                            <tr style="">
+                                <td style="font-weight: 700;">Net Income</td>
+                                <td style="font-weight: 700;">{{summary.net_income|intcomma}}</td>
+                            </tr>                                
+                        </tbody>
+
+                    </table>
+
+</body>
